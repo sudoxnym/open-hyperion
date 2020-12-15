@@ -16,7 +16,6 @@ SOURCES += \
     ORGBExamplePlugin.cpp
 
 HEADERS += \
-    ORGBExamplePluginInterface.h   \
     ORGBExamplePlugin.h            \
     Dependencies/ResourceManager.h \
     Dependencies/RGBController.h   \
@@ -26,6 +25,7 @@ HEADERS += \
     Dependencies/NetworkProtocol.h \
     Dependencies/net_port.h        \
     Dependencies/json.hpp          \
+    ORGBPluginInterface.h
 
 # Default rules for deployment.
 unix {

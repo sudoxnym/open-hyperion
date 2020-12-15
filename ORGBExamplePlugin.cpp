@@ -1,6 +1,18 @@
 #include "ORGBExamplePlugin.h"
 #include "Dependencies/ResourceManager.h"
 
+bool ORGBPlugin::HasCustomIcon() const
+{
+    return false;
+}
+
+QLabel* ORGBPlugin::TabLabel() const
+{
+    QLabel *TLabel = new QLabel();
+    TLabel->setText("Example");
+    return TLabel;
+}
+
 std::string ORGBPlugin::PluginName() const
 {
     return "ExamplePlugin";

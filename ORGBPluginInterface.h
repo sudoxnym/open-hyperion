@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtPlugin>
+#include <QLabel>
 #include "Dependencies/ResourceManager.h"
 
 class QString;
@@ -11,9 +12,12 @@ class ORGBPluginInterface
 public:
     virtual ~ORGBPluginInterface() {}
 
-    virtual std::string PluginName()                const = 0;
-    virtual std::string PluginDesc()                const = 0;
-    virtual std::string PluginLocal()               const = 0;
+    virtual bool        HasCustomIcon() const = 0;
+    virtual QLabel*     TabLabel()      const = 0;
+
+    virtual std::string PluginName()    const = 0;
+    virtual std::string PluginDesc()    const = 0;
+    virtual std::string PluginLocal()   const = 0;
 
     virtual QWidget* CreateGUI(QWidget *Parent, ResourceManager *RM = nullptr) const = 0;
 };

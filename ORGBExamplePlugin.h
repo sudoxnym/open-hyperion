@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ORGBExamplePluginInterface.h"
+#include "ORGBPluginInterface.h"
 #include "Dependencies/ResourceManager.h"
 
 #include <QObject>
@@ -21,9 +21,12 @@ class ORGBPlugin : public QObject, public ORGBPluginInterface
 public:
     ~ORGBPlugin() override {}
 
-    std::string PluginName() const override;
-    std::string PluginDesc()  const override;
-    std::string PluginLocal() const override;
+    bool        HasCustomIcon() const override;
+    QLabel*     TabLabel()      const override;
+
+    std::string PluginName()    const override;
+    std::string PluginDesc()    const override;
+    std::string PluginLocal()   const override;
 
     QWidget* CreateGUI(QWidget *Parent, ResourceManager *RM = nullptr) const override;
 
