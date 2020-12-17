@@ -1,34 +1,34 @@
 #include "ORGBExamplePlugin.h"
 #include "Dependencies/ResourceManager.h"
 
-bool ORGBPlugin::HasCustomIcon() const
+bool ORGBPlugin::HasCustomIcon()
 {
     return false;
 }
 
-QLabel* ORGBPlugin::TabLabel() const
+QLabel* ORGBPlugin::TabLabel()
 {
     QLabel *TLabel = new QLabel();
     TLabel->setText("Example");
     return TLabel;
 }
 
-std::string ORGBPlugin::PluginName() const
+std::string ORGBPlugin::PluginName()
 {
     return "ExamplePlugin";
 }
 
-std::string ORGBPlugin::PluginDesc() const
+std::string ORGBPlugin::PluginDesc()
 {
     return "This is an Example plugin for OpenRGB";
 }
 
-std::string ORGBPlugin::PluginLocal() const
+std::string ORGBPlugin::PluginLocal()
 {
     return "InfoTab";
 }
 
-QWidget* ORGBPlugin::CreateGUI(QWidget *Parent, ResourceManager *RM) const
+QWidget* ORGBPlugin::CreateGUI(QWidget *Parent, ResourceManager *RM)
 {
     QWidget *ORGBExamplePage = new QWidget(Parent);
     QLabel *ORGBExampleLabel = new QLabel(ORGBExamplePage);
