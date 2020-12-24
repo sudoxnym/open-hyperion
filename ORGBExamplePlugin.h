@@ -19,17 +19,15 @@ class ORGBPlugin : public QObject, public ORGBPluginInterface
     Q_INTERFACES(ORGBPluginInterface)
 
 public:
-    ~ORGBPlugin() override {}
+    virtual                 ~ORGBPlugin() {};
 
-    bool        HasCustomIcon() override;
-    QLabel*     TabLabel()      override;
+    PluginInfo              PInfo;
 
-    std::string PluginName()    override;
-    std::string PluginDesc()    override;
-    std::string PluginLocal()   override;
+    virtual PluginInfo      DefineNeeded() override;
 
-    QWidget* CreateGUI(QWidget *Parent, ResourceManager *RM = nullptr) override;
+    virtual PluginInfo      init(json Settings , bool DarkTheme) override;
 
+    virtual QWidget         *CreateGUI(QWidget *Parent) override;
 private slots:
     void on_ExampleButton_clicked();
 };
