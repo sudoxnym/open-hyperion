@@ -133,6 +133,12 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
     e131_packet_t   packet;
     e131_error_t    error;
     uint8_t         last_seq = 0x00;
+    std::chrono::time_point<std::chrono::steady_clock>  last_update_time;
+
+    /*-----------------------------------------------------*\
+    | Initialize update time                                |
+    \*-----------------------------------------------------*/
+    last_update_time = std::chrono::steady_clock::now();
 
     /*-----------------------------------------------------*\
     | Clear online status                                   |
@@ -204,6 +210,13 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
 //        }
 
         received_count++;
+
+        if((std::chrono::steady_clock::now() - last_update_time) > std::chrono::milliseconds(500))
+        {
+            ui->PacketsReceivedValue->setText(QString::number(received_count));
+
+            last_update_time = std::chrono::steady_clock::now();
+        }
 
         last_seq = packet.frame.seq_number;
 
