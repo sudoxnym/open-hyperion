@@ -20,13 +20,55 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="1">
+    <widget class="QLabel" name="ReceiverStatusValue">
+     <property name="text">
+      <string>Offline</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="ButtonStartReceiver">
+     <property name="text">
+      <string>Start Receiver</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QPushButton" name="ButtonStopReceiver">
+     <property name="text">
+      <string>Stop Receiver</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
+    <widget class="QLabel" name="ReceiverStatusLabel">
+     <property name="text">
+      <string>Receiver Status:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="4">
     <widget class="QTreeWidget" name="E131TreeView">
      <column>
       <property name="text">
        <string notr="true">1</string>
       </property>
      </column>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="PacketsReceivedLabel">
+     <property name="text">
+      <string>Packets Received:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="PacketsReceivedValue">
+     <property name="text">
+      <string>0</string>
+     </property>
     </widget>
    </item>
   </layout>

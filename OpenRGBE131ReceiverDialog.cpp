@@ -38,6 +38,11 @@ OpenRGBE131ReceiverDialog::OpenRGBE131ReceiverDialog(ResourceManager* manager, Q
     \*-------------------------------------------------*/
     resource_manager->RegisterDeviceListChangeCallback(DeviceListChanged_Callback, this);
     resource_manager->RegisterDetectionProgressCallback(DeviceListChanged_Callback, this);
+
+    online         = false;
+    received_count = 0;
+
+    UpdateOnlineStatus();
 }
 
 OpenRGBE131ReceiverDialog::~OpenRGBE131ReceiverDialog()
@@ -119,9 +124,6 @@ void OpenRGBE131ReceiverDialog::DeviceListChanged()
         }
 
         ui->E131TreeView->expandAll();
-
-        // Start the receiver thread
-        E131ReceiverThread = new std::thread(&OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction, this);
     }
 }
 
@@ -131,6 +133,11 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
     e131_packet_t   packet;
     e131_error_t    error;
     uint8_t         last_seq = 0x00;
+
+    /*-----------------------------------------------------*\
+    | Clear online status                                   |
+    \*-----------------------------------------------------*/
+    online = false;
 
     /*-----------------------------------------------------*\
     | Create a socket for E1.31                             |
@@ -165,14 +172,22 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
     }
 
     /*-----------------------------------------------------*\
+    | Set online status                                     |
+    \*-----------------------------------------------------*/
+    online = true;
+
+    UpdateOnlineStatus();
+
+    /*-----------------------------------------------------*\
     | Loop to receive E1.31 packets                         |
     \*-----------------------------------------------------*/
-    while(1)
+    while(online)
     {
         if(e131_recv(sockfd, &packet) < 0)
         {
             printf("Receive error\r\n");
-            return;
+
+            online = false;
         }
 
         if((error = e131_pkt_validate(&packet)) != E131_ERR_NONE)
@@ -187,6 +202,8 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
 //            last_seq = packet.frame.seq_number;
 //            continue;
 //        }
+
+        received_count++;
 
         last_seq = packet.frame.seq_number;
 
@@ -233,4 +250,46 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
             }
         }
     }
+
+    closesocket(sockfd);
+
+    UpdateOnlineStatus();
+}
+
+void OpenRGBE131ReceiverDialog::UpdateOnlineStatus()
+{
+    if(online)
+    {
+        ui->ReceiverStatusValue->setText("Online");
+
+        ui->ButtonStartReceiver->setEnabled(false);
+        ui->ButtonStopReceiver->setEnabled(true);
+    }
+    else
+    {
+        ui->ReceiverStatusValue->setText("Offline");
+
+        received_count = 0;
+
+        ui->PacketsReceivedValue->setText(QString::number(received_count));
+
+        ui->ButtonStartReceiver->setEnabled(true);
+        ui->ButtonStopReceiver->setEnabled(false);
+    }
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonStartReceiver_clicked()
+{
+    if(!online)
+    {
+        // Start the receiver thread
+        E131ReceiverThread = new std::thread(&OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction, this);
+    }
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonStopReceiver_clicked()
+{
+    online = false;
+
+    UpdateOnlineStatus();
 }

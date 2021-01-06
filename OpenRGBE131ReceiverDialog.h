@@ -20,11 +20,21 @@ public:
     void DeviceListChanged();
     void E131ReceiverThreadFunction();
 
-private:
-    ResourceManager* resource_manager;
-    Ui::OpenRGBE131ReceiverDialog *ui;
+private slots:
+    void on_ButtonStartReceiver_clicked();
 
-    std::thread*     E131ReceiverThread;
+    void on_ButtonStopReceiver_clicked();
+
+private:
+    ResourceManager*                resource_manager;
+    Ui::OpenRGBE131ReceiverDialog  *ui;
+
+    bool                            online;
+    unsigned long                   received_count;
+
+    std::thread*                    E131ReceiverThread;
+
+    void                            UpdateOnlineStatus();
 };
 
 #endif // OPENRGBE131RECEIVERDIALOG_H
