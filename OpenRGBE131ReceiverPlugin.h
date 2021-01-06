@@ -30,11 +30,6 @@ public:
 
     virtual QWidget                *CreateGUI(QWidget* parent) override;
 
-    void TimerThreadFunction();
-
 private:
     ResourceManager*        resource_manager;
-    QLabel*                 plugin_label;
-
-    std::thread* TimerThread;
 };

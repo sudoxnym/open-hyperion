@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------------------------#
-# OpenRGB Plugin Template QMake Project                                                         #
+# OpenRGB E1.31 Receiver Plugin QMake Project                                                   #
 #                                                                                               #
 #   herosilas12 (CoffeeIsLife)                          12/11/2020                              #
 #   Adam Honse (CalcProgrammer1)                        1/5/2021                                #
@@ -26,11 +26,18 @@ CONFIG += c++11
 #-----------------------------------------------------------------------------------------------#
 # Plugin Project Files                                                                          #
 #-----------------------------------------------------------------------------------------------#
+INCLUDEPATH +=                                                                                  \
+    dependencies/libe131/src/                                                                   \
+
 SOURCES +=                                                                                      \
-    OpenRGBPlugin.cpp                                                                           \
+    dependencies/libe131/src/e131.c                                                             \
+    OpenRGBE131ReceiverDialog.cpp                                                               \
+    OpenRGBE131ReceiverPlugin.cpp                                                               \
 
 HEADERS +=                                                                                      \
-    OpenRGBPlugin.h                                                                             \
+    dependencies/libe131/src/e131.h                                                             \
+    OpenRGBE131ReceiverDialog.h                                                                 \
+    OpenRGBE131ReceiverPlugin.h                                                                 \
 
 #-----------------------------------------------------------------------------------------------#
 # OpenRGB Plugin SDK                                                                            #
@@ -56,6 +63,29 @@ HEADERS +=                                                                      
     OpenRGB/RGBController/RGBController.h                                                       \
 
 #-----------------------------------------------------------------------------------------------#
+# Windows-specific Configuration                                                                #
+#-----------------------------------------------------------------------------------------------#
+win32:contains(QMAKE_TARGET.arch, x86_64) {
+    LIBS +=                                                                                     \
+        -lws2_32                                                                                \
+}
+
+win32:contains(QMAKE_TARGET.arch, x86) {
+    LIBS +=                                                                                     \
+        -lws2_32                                                                                \
+}
+
+win32:DEFINES -=                                                                                \
+    UNICODE
+
+win32:DEFINES +=                                                                                \
+    _MBCS                                                                                       \
+    WIN32                                                                                       \
+    _CRT_SECURE_NO_WARNINGS                                                                     \
+    _WINSOCK_DEPRECATED_NO_WARNINGS                                                             \
+    WIN32_LEAN_AND_MEAN
+
+#-----------------------------------------------------------------------------------------------#
 # Default rules for deployment.                                                                 #
 #-----------------------------------------------------------------------------------------------#
 unix {
@@ -63,3 +93,6 @@ unix {
 }
 
 !isEmpty(target.path): INSTALLS += target
+
+FORMS += \
+    OpenRGBE131ReceiverDialog.ui
