@@ -107,7 +107,7 @@ void OpenRGBE131ReceiverDialog::DeviceListChanged()
                     remaining_leds           = remaining_leds - new_member.num_leds;
 
                     // Only set the update flag for the last universe of the controller
-                    if(universe_idx == num_universes)
+                    if(universe_idx == (num_universes - 1))
                     {
                         new_member.update   = true;
                     }
