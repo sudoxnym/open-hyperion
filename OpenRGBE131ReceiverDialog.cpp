@@ -235,6 +235,7 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
         if((std::chrono::steady_clock::now() - last_update_time) > std::chrono::milliseconds(500))
         {
             ui->PacketsReceivedValue->setText(QString::number(received_count));
+            ui->ReceiverSourceValue->setText(QString::fromLocal8Bit((const char *)packet.frame.source_name, 64));
 
             last_update_time = std::chrono::steady_clock::now();
         }
