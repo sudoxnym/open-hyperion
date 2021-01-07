@@ -36,6 +36,13 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="3">
+    <widget class="QLabel" name="ReceiverSourceValue">
+     <property name="text">
+      <string>Source</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="QLabel" name="ReceiverStatusValue">
      <property name="text">
@@ -78,10 +85,16 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="3">
-    <widget class="QLabel" name="ReceiverSourceValue">
+   <item row="3" column="3">
+    <widget class="QCheckBox" name="EnableMulticastBox">
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
      <property name="text">
-      <string>Source</string>
+      <string>Enable Multicast</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

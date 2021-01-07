@@ -187,14 +187,19 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
     }
 
     /*-----------------------------------------------------*\
-    | Join the configured universes                         |
+    | Join the configured universes if multicast enabled    |
     \*-----------------------------------------------------*/
+    bool multicast = ui->EnableMulticastBox->checkState() == Qt::Checked;
+
     for(unsigned int universe_idx = 0; universe_idx < universe_list.size(); universe_idx++)
     {
-        if(e131_multicast_join(sockfd, universe_list[universe_idx].universe) < 0)
+        if(multicast)
         {
-            printf("Join error\r\n");
-            return;
+            if(e131_multicast_join(sockfd, universe_list[universe_idx].universe) < 0)
+            {
+                printf("Join error\r\n");
+                return;
+            }
         }
     }
 
