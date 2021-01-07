@@ -60,41 +60,62 @@ void OpenRGBE131ReceiverDialog::DeviceListChanged()
         {
             RGBController* controller   = resource_manager->GetRGBControllers()[controller_idx];
 
-            unsigned int num_universes  = 1 + ((controller->leds.size() * 3) / 512);
-            unsigned int remaining_leds = controller->leds.size();
-            unsigned int start_led      = 0;
-
-            for(unsigned int universe_idx = 0; universe_idx < num_universes; universe_idx++)
+            // Determine if the controller has a Direct mode
+            bool has_direct = false;
+            for(unsigned int mode_idx = 0; mode_idx < controller->modes.size(); mode_idx++)
             {
-                // For now, create universes sequentially per controller
-                universe_entry new_entry;
-
-                new_entry.universe = universe_list.size() + 1;
-
-                // Add members as needed
-                universe_member new_member;
-
-                new_member.controller    = resource_manager->GetRGBControllers()[controller_idx];
-                new_member.start_channel = 1;
-                new_member.start_led     = start_led;
-                new_member.num_leds      = remaining_leds;
-                new_member.update        = 1;
-
-                // Limit the number of LEDs
-                if(new_member.num_leds > MAX_LEDS_PER_UNIVERSE)
+                if(controller->modes[mode_idx].name == "Direct")
                 {
-                    new_member.num_leds  = MAX_LEDS_PER_UNIVERSE;
+                    has_direct = true;
+                    break;
                 }
+            }
 
-                // Update start LED
-                start_led                = start_led + new_member.num_leds;
+            // Only map controllers that have a Direct mode
+            if(has_direct)
+            {
+                unsigned int num_universes  = 1 + ((controller->leds.size() * 3) / 512);
+                unsigned int remaining_leds = controller->leds.size();
+                unsigned int start_led      = 0;
 
-                // Update remaining LED count
-                remaining_leds           = remaining_leds - new_member.num_leds;
+                for(unsigned int universe_idx = 0; universe_idx < num_universes; universe_idx++)
+                {
+                    // For now, create universes sequentially per controller
+                    universe_entry new_entry;
 
-                new_entry.members.push_back(new_member);
+                    new_entry.universe = universe_list.size() + 1;
 
-                universe_list.push_back(new_entry);
+                    // Add members as needed
+                    universe_member new_member;
+
+                    new_member.controller    = resource_manager->GetRGBControllers()[controller_idx];
+                    new_member.start_channel = 1;
+                    new_member.start_led     = start_led;
+                    new_member.num_leds      = remaining_leds;
+                    new_member.update        = false;
+
+                    // Limit the number of LEDs
+                    if(new_member.num_leds > MAX_LEDS_PER_UNIVERSE)
+                    {
+                        new_member.num_leds  = MAX_LEDS_PER_UNIVERSE;
+                    }
+
+                    // Update start LED
+                    start_led                = start_led + new_member.num_leds;
+
+                    // Update remaining LED count
+                    remaining_leds           = remaining_leds - new_member.num_leds;
+
+                    // Only set the update flag for the last universe of the controller
+                    if(universe_idx == num_universes)
+                    {
+                        new_member.update   = true;
+                    }
+
+                    new_entry.members.push_back(new_member);
+
+                    universe_list.push_back(new_entry);
+                }
             }
         }
 
