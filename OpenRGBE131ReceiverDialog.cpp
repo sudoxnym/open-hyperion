@@ -279,6 +279,9 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
 
                         // Set LED color in controller
                         controller->colors[led_idx] = led_color;
+
+                        // Increment the channel by 3 to account for red, green, and blue channels
+                        channel = channel + 3;
                     }
 
                     // If configured to update the device, update
