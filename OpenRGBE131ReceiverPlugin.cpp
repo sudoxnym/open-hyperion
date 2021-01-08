@@ -26,7 +26,6 @@ OpenRGBPluginInfo OpenRGBPlugin::Initialize(bool dark_theme, ResourceManager* re
     info.PluginDescription  = "OpenRGB E1.31 Receiver Plugin";
     info.PluginLocation     = "TopTabBar";
     info.HasCustom          = false;
-    info.SettingName        = "";
     info.PluginLabel        = new QLabel();
 
     /*-----------------------------------------------------*\
