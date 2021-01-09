@@ -17,13 +17,19 @@ public:
     explicit OpenRGBE131ReceiverDialog(ResourceManager* manager, QWidget *parent = nullptr);
     ~OpenRGBE131ReceiverDialog();
 
-    void DeviceListChanged();
     void E131ReceiverThreadFunction();
+
+public slots:
+    void DeviceListChanged();
 
 private slots:
     void on_ButtonStartReceiver_clicked();
 
     void on_ButtonStopReceiver_clicked();
+
+    void on_LineEdit_updated(QObject* lineedit_argument);
+
+    void on_CheckBox_updated(QObject* checkbox_argument);
 
 private:
     ResourceManager*                resource_manager;
@@ -35,6 +41,7 @@ private:
     std::thread*                    E131ReceiverThread;
 
     void                            UpdateOnlineStatus();
+    void                            UpdateTreeView();
 };
 
 #endif // OPENRGBE131RECEIVERDIALOG_H

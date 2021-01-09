@@ -2,12 +2,16 @@
 #include "ui_OpenRGBE131ReceiverDialog.h"
 
 #include <e131.h>
+#include <QLineEdit>
+#include <QSignalMapper>
 
 #define MAX_LEDS_PER_UNIVERSE  170
 
 void DeviceListChanged_Callback(void * this_ptr)
 {
-    ((OpenRGBE131ReceiverDialog *)this_ptr)->DeviceListChanged();
+    OpenRGBE131ReceiverDialog * this_obj = (OpenRGBE131ReceiverDialog *)this_ptr;
+
+    QMetaObject::invokeMethod(this_obj, "DeviceListChanged", Qt::QueuedConnection);
 }
 
 typedef struct
@@ -26,6 +30,38 @@ typedef struct
 } universe_entry;
 
 static std::vector<universe_entry> universe_list;
+
+typedef unsigned int LineEditParameter;
+enum
+{
+    LINEEDIT_PARAMETER_START_CHANNEL,
+    LINEEDIT_PARAMETER_START_LED,
+    LINEEDIT_PARAMETER_NUM_LEDS
+};
+
+class LineEditArgument : public QObject
+{
+public:
+    QWidget *           widget;
+    unsigned int        universe_idx;
+    unsigned int        member_idx;
+    LineEditParameter   parameter;
+};
+
+typedef unsigned int CheckBoxParameter;
+enum
+{
+    CHECKBOX_PARAMETER_UPDATE
+};
+
+class CheckBoxArgument : public QObject
+{
+public:
+    QWidget *           widget;
+    unsigned int        universe_idx;
+    unsigned int        member_idx;
+    CheckBoxParameter   parameter;
+};
 
 OpenRGBE131ReceiverDialog::OpenRGBE131ReceiverDialog(ResourceManager* manager, QWidget *parent) : QWidget(parent),  ui(new Ui::OpenRGBE131ReceiverDialog)
 {
@@ -54,6 +90,7 @@ void OpenRGBE131ReceiverDialog::DeviceListChanged()
 {
     if(resource_manager->GetDetectionPercent() == 100)
     {
+        ui->E131TreeView->clear();
         universe_list.clear();
 
         for(unsigned int controller_idx = 0; controller_idx < resource_manager->GetRGBControllers().size(); controller_idx++)
@@ -119,33 +156,109 @@ void OpenRGBE131ReceiverDialog::DeviceListChanged()
             }
         }
 
-        ui->E131TreeView->clear();
-
-        ui->E131TreeView->setColumnCount(5);
-        ui->E131TreeView->header()->setStretchLastSection(false);
-        ui->E131TreeView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
-        ui->E131TreeView->setHeaderLabels(QStringList() << "Universe" << "Start Channel" << "Start LED" << "LED Count" << "Update");
-
-        for(unsigned int universe_idx = 0; universe_idx < universe_list.size(); universe_idx++)
-        {
-            QTreeWidgetItem* new_universe_entry = new QTreeWidgetItem(ui->E131TreeView);
-
-            new_universe_entry->setText(0, QString::fromStdString("Universe " + std::to_string(universe_list[universe_idx].universe)));
-
-            for(unsigned int member_idx = 0; member_idx < universe_list[universe_idx].members.size(); member_idx++)
-            {
-                QTreeWidgetItem* new_member_entry = new QTreeWidgetItem(new_universe_entry);
-
-                new_member_entry->setText(0, QString::fromStdString((universe_list[universe_idx].members[member_idx].controller->name)));
-                new_member_entry->setText(1, QString::number(universe_list[universe_idx].members[member_idx].start_channel));
-                new_member_entry->setText(2, QString::number(universe_list[universe_idx].members[member_idx].start_led));
-                new_member_entry->setText(3, QString::number(universe_list[universe_idx].members[member_idx].num_leds));
-                new_member_entry->setText(4, QString::number(universe_list[universe_idx].members[member_idx].update));
-            }
-        }
-
-        ui->E131TreeView->expandAll();
+        UpdateTreeView();
     }
+    else
+    {
+        ui->E131TreeView->clear();
+        universe_list.clear();
+    }
+}
+
+void OpenRGBE131ReceiverDialog::UpdateTreeView()
+{
+    ui->E131TreeView->clear();
+
+    ui->E131TreeView->setColumnCount(5);
+    ui->E131TreeView->header()->setStretchLastSection(false);
+    ui->E131TreeView->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+    ui->E131TreeView->setHeaderLabels(QStringList() << "Universe" << "Start Channel" << "Start LED" << "LED Count" << "Update");
+
+    /*-----------------------------------------------------*\
+    | Create a signal mapper for LineEdit fields            |
+    \*-----------------------------------------------------*/
+    QSignalMapper* LineEditMapper = new QSignalMapper(this);
+    connect(LineEditMapper, SIGNAL(mapped(QObject *)), this, SLOT(on_LineEdit_updated(QObject *)));
+
+    /*-----------------------------------------------------*\
+    | Create a signal mapper for CheckBox fields            |
+    \*-----------------------------------------------------*/
+    QSignalMapper* CheckBoxMapper = new QSignalMapper(this);
+    connect(CheckBoxMapper, SIGNAL(mapped(QObject *)), this, SLOT(on_CheckBox_updated(QObject *)));
+
+    for(unsigned int universe_idx = 0; universe_idx < universe_list.size(); universe_idx++)
+    {
+        QTreeWidgetItem* new_universe_entry = new QTreeWidgetItem(ui->E131TreeView);
+
+        new_universe_entry->setText(0, QString::fromStdString("Universe " + std::to_string(universe_list[universe_idx].universe)));
+
+        for(unsigned int member_idx = 0; member_idx < universe_list[universe_idx].members.size(); member_idx++)
+        {
+            QTreeWidgetItem* new_member_entry = new QTreeWidgetItem(new_universe_entry);
+
+            new_member_entry->setText(0, QString::fromStdString((universe_list[universe_idx].members[member_idx].controller->name)));
+
+            QLineEdit* start_channel_edit = new QLineEdit(ui->E131TreeView);
+            start_channel_edit->setText(QString::number(universe_list[universe_idx].members[member_idx].start_channel));
+            ui->E131TreeView->setItemWidget(new_member_entry, 1, start_channel_edit);
+
+            LineEditArgument* start_channel_argument = new LineEditArgument();
+
+            start_channel_argument->widget          = start_channel_edit;
+            start_channel_argument->universe_idx    = universe_idx;
+            start_channel_argument->member_idx      = member_idx;
+            start_channel_argument->parameter       = LINEEDIT_PARAMETER_START_CHANNEL;
+
+            connect(start_channel_edit, SIGNAL(editingFinished()), LineEditMapper, SLOT(map()));
+            LineEditMapper->setMapping(start_channel_edit, start_channel_argument);
+
+            QLineEdit* start_led_edit = new QLineEdit(ui->E131TreeView);
+            start_led_edit->setText(QString::number(universe_list[universe_idx].members[member_idx].start_led));
+            ui->E131TreeView->setItemWidget(new_member_entry, 2, start_led_edit);
+
+            LineEditArgument* start_led_argument = new LineEditArgument();
+
+            start_led_argument->widget          = start_led_edit;
+            start_led_argument->universe_idx    = universe_idx;
+            start_led_argument->member_idx      = member_idx;
+            start_led_argument->parameter       = LINEEDIT_PARAMETER_START_LED;
+
+            connect(start_led_edit, SIGNAL(editingFinished()), LineEditMapper, SLOT(map()));
+            LineEditMapper->setMapping(start_led_edit, start_led_argument);
+
+            QLineEdit* num_leds_edit = new QLineEdit(ui->E131TreeView);
+            num_leds_edit->setText(QString::number(universe_list[universe_idx].members[member_idx].num_leds));
+            ui->E131TreeView->setItemWidget(new_member_entry, 3, num_leds_edit);
+
+            LineEditArgument* num_leds_argument = new LineEditArgument();
+
+            num_leds_argument->widget          = num_leds_edit;
+            num_leds_argument->universe_idx    = universe_idx;
+            num_leds_argument->member_idx      = member_idx;
+            num_leds_argument->parameter       = LINEEDIT_PARAMETER_NUM_LEDS;
+
+            connect(num_leds_edit, SIGNAL(editingFinished()), LineEditMapper, SLOT(map()));
+            LineEditMapper->setMapping(num_leds_edit, num_leds_argument);
+
+            QCheckBox* update_checkbox = new QCheckBox(ui->E131TreeView);
+            update_checkbox->setChecked(universe_list[universe_idx].members[member_idx].update);
+            ui->E131TreeView->setItemWidget(new_member_entry, 4, update_checkbox);
+
+            CheckBoxArgument* update_argument = new CheckBoxArgument();
+
+            update_argument->widget          = update_checkbox;
+            update_argument->universe_idx    = universe_idx;
+            update_argument->member_idx      = member_idx;
+            update_argument->parameter       = CHECKBOX_PARAMETER_UPDATE;
+
+            connect(update_checkbox, SIGNAL(clicked()), CheckBoxMapper, SLOT(map()));
+            CheckBoxMapper->setMapping(update_checkbox, update_argument);
+        }
+    }
+
+    ui->E131TreeView->setStyleSheet("QLineEdit { border: none }");
+
+    ui->E131TreeView->expandAll();
 }
 
 void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
@@ -265,6 +378,12 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
                     unsigned int    num_leds    = universe_list[universe_idx].members[member_idx].num_leds;
                     bool            update      = universe_list[universe_idx].members[member_idx].update;
 
+                    // Channel range is 1-512, so break if channel is zero
+                    if(channel == 0)
+                    {
+                        break;
+                    }
+
                     for(unsigned int led_idx = start_led; led_idx < (start_led + num_leds); led_idx++)
                     {
                         // Calculate channels for this LED
@@ -272,10 +391,22 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
                         unsigned int grn_idx    = channel + 1;
                         unsigned int blu_idx    = channel + 2;
 
+                        // Verify last channel (blue) is within range 1-512
+                        if(blu_idx > 512)
+                        {
+                            break;
+                        }
+
                         // Get color out of E1.31 packet
                         RGBColor led_color      = ToRGBColor(packet.dmp.prop_val[red_idx],
                                                              packet.dmp.prop_val[grn_idx],
                                                              packet.dmp.prop_val[blu_idx]);
+
+                        // Verify LED index
+                        if(led_idx >= controller->colors.size())
+                        {
+                            break;
+                        }
 
                         // Set LED color in controller
                         controller->colors[led_idx] = led_color;
@@ -335,4 +466,52 @@ void OpenRGBE131ReceiverDialog::on_ButtonStopReceiver_clicked()
     online = false;
 
     UpdateOnlineStatus();
+}
+
+void OpenRGBE131ReceiverDialog::on_LineEdit_updated(QObject* lineedit_argument)
+{
+    /*-----------------------------------------------------*\
+    | Update the parameter                                  |
+    \*-----------------------------------------------------*/
+    unsigned int universe_idx   = ((LineEditArgument*)lineedit_argument)->universe_idx;
+    unsigned int member_idx     = ((LineEditArgument*)lineedit_argument)->member_idx;
+    LineEditParameter parameter = ((LineEditArgument*)lineedit_argument)->parameter;
+    QWidget* widget             = ((LineEditArgument*)lineedit_argument)->widget;
+
+    unsigned int value          = ((QLineEdit*)widget)->text().toInt();
+
+    switch(parameter)
+    {
+        case LINEEDIT_PARAMETER_START_CHANNEL:
+            universe_list[universe_idx].members[member_idx].start_channel = value;
+            break;
+
+        case LINEEDIT_PARAMETER_START_LED:
+            universe_list[universe_idx].members[member_idx].start_led = value;
+            break;
+
+        case LINEEDIT_PARAMETER_NUM_LEDS:
+            universe_list[universe_idx].members[member_idx].num_leds = value;
+            break;
+    }
+}
+
+void OpenRGBE131ReceiverDialog::on_CheckBox_updated(QObject* checkbox_argument)
+{
+    /*-----------------------------------------------------*\
+    | Update the parameter                                  |
+    \*-----------------------------------------------------*/
+    unsigned int universe_idx   = ((CheckBoxArgument*)checkbox_argument)->universe_idx;
+    unsigned int member_idx     = ((CheckBoxArgument*)checkbox_argument)->member_idx;
+    CheckBoxParameter parameter = ((CheckBoxArgument*)checkbox_argument)->parameter;
+    QWidget* widget             = ((CheckBoxArgument*)checkbox_argument)->widget;
+
+    bool value                  = ((QCheckBox*)widget)->isChecked();
+
+    switch(parameter)
+    {
+        case CHECKBOX_PARAMETER_UPDATE:
+            universe_list[universe_idx].members[member_idx].update = value;
+            break;
+    }
 }
