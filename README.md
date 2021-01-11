@@ -10,14 +10,13 @@ Build the plugin using QT Creator or QMake using the .pro file.
 
 Copy the plugin to your OpenRGB plugins directory.
 
-## Windows
-
-%APPDATA%\OpenRGB\plugins
-
-## Linux
-
-~/.config/OpenRGB/plugins
+* Windows: %APPDATA%\OpenRGB\plugins
+* Linux: ~/.config/OpenRGB/plugins
 
 # Usage
 
 Once installed, you will have an E1.31 Receiver tab in OpenRGB.  Select this tab.  Once detection is complete, the list of universes should be populated.  After this, you can simply click the Start Receiver button and OpenRGB is ready to receive E1.31 packets.
+
+# Screenshot
+
+![image](/uploads/7aa973dfa45a98ffa394d748a6125d44/image.png)
