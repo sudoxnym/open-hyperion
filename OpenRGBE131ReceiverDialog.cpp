@@ -5,6 +5,11 @@
 #include <QLineEdit>
 #include <QSignalMapper>
 
+#ifndef _WIN32
+#include <unistd.h>
+#define closesocket ::close
+#endif
+
 #define MAX_LEDS_PER_UNIVERSE  170
 
 void DeviceListChanged_Callback(void * this_ptr)
