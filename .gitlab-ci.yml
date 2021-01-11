@@ -20,6 +20,38 @@ before_script:
     - apt install -y build-essential qtcreator qt5-default qtdeclarative5-dev qtwebengine5-dev libusb-1.0-0-dev libhidapi-dev pkgconf wget git
 
 #-----------------------------------------------------------------------#
+# Linux (AppImage) 32-bit Build Target                                  #
+#-----------------------------------------------------------------------#
+build_linux_32:
+  <<: *ccache_init
+  image: i386/ubuntu:bionic
+  stage: build
+  script:
+  - export $(dpkg-architecture)
+  - ./scripts/build-plugin.sh
+  
+  artifacts:
+    paths:
+    - libOpenRGBE131ReceiverPlugin.so.1.0.0
+    expire_in: 30 days
+
+#-----------------------------------------------------------------------#
+# Linux (AppImage) 64-bit Build Target                                  #
+#-----------------------------------------------------------------------#
+build_linux_64:
+  <<: *ccache_init
+  image: ubuntu:bionic
+  stage: build
+  script:
+  - export $(dpkg-architecture)
+  - ./scripts/build-plugin.sh
+  
+  artifacts:
+    paths:
+    - libOpenRGBE131ReceiverPlugin.so.1.0.0
+    expire_in: 30 days
+
+#-----------------------------------------------------------------------#
 # Windows (32-bit) Build Target                                         #
 #-----------------------------------------------------------------------#
 build_windows_32:
