@@ -364,7 +364,7 @@ void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
         | If received packet is from a valid universe,      |
         | update the corresponding devices                  |
         \*-------------------------------------------------*/
-        unsigned int universe = ntohs(packet.frame.universe) - 1;
+        unsigned int universe = ntohs(packet.frame.universe);
 
         for(unsigned int universe_idx = 0; universe_idx < universe_list.size(); universe_idx++)
         {
