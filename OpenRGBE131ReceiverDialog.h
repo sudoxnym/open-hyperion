@@ -31,6 +31,14 @@ private slots:
 
     void on_CheckBox_updated(QObject* checkbox_argument);
 
+    void on_ButtonAddController_clicked();
+
+    void on_ButtonRemoveController_clicked();
+
+    void on_ButtonAddUniverse_clicked();
+
+    void on_ButtonRemoveUniverse_clicked();
+
 private:
     ResourceManager*                resource_manager;
     Ui::OpenRGBE131ReceiverDialog  *ui;
@@ -41,6 +49,7 @@ private:
     std::thread*                    E131ReceiverThread;
 
     void                            UpdateOnlineStatus();
+    void                            UpdateControllersTreeView();
     void                            UpdateTreeView();
 };
 

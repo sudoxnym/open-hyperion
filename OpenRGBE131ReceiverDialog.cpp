@@ -95,6 +95,7 @@ void OpenRGBE131ReceiverDialog::DeviceListChanged()
 {
     if(resource_manager->GetDetectionPercent() == 100)
     {
+        ui->ControllersTreeView->clear();
         ui->E131TreeView->clear();
         universe_list.clear();
 
@@ -161,12 +162,30 @@ void OpenRGBE131ReceiverDialog::DeviceListChanged()
             }
         }
 
+        UpdateControllersTreeView();
         UpdateTreeView();
     }
     else
     {
         ui->E131TreeView->clear();
         universe_list.clear();
+    }
+}
+
+void OpenRGBE131ReceiverDialog::UpdateControllersTreeView()
+{
+    ui->ControllersTreeView->clear();
+
+    ui->ControllersTreeView->setColumnCount(1);
+    ui->ControllersTreeView->setHeaderLabels(QStringList() << "Controller");
+
+    for(unsigned int controller_idx = 0; controller_idx < resource_manager->GetRGBControllers().size(); controller_idx++)
+    {
+        RGBController* controller   = resource_manager->GetRGBControllers()[controller_idx];
+
+        QTreeWidgetItem* new_controller_entry = new QTreeWidgetItem(ui->ControllersTreeView);
+
+        new_controller_entry->setText(0, QString::fromStdString(controller->name));
     }
 }
 
@@ -519,4 +538,121 @@ void OpenRGBE131ReceiverDialog::on_CheckBox_updated(QObject* checkbox_argument)
             universe_list[universe_idx].members[member_idx].update = value;
             break;
     }
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonAddController_clicked()
+{
+    /*-----------------------------------------------------*\
+    | Make sure a valid controller is selected on the left  |
+    | and a valid universe is selected on the right         |
+    \*-----------------------------------------------------*/
+    int selected_controller = ui->ControllersTreeView->indexOfTopLevelItem(ui->ControllersTreeView->currentItem());
+    int selected_universe   = ui->E131TreeView->indexOfTopLevelItem(ui->E131TreeView->currentItem());
+
+    if((selected_controller == -1) || (selected_universe == -1))
+    {
+        return;
+    }
+
+    /*-----------------------------------------------------*\
+    | Add controller to universe                            |
+    \*-----------------------------------------------------*/
+    universe_member new_member;
+
+    new_member.controller                   = resource_manager->GetRGBControllers()[selected_controller];
+    new_member.start_channel                = 1;
+    new_member.start_led                    = 0;
+    new_member.num_leds                     = 0;
+    new_member.update                       = false;
+
+    universe_list[selected_universe].members.push_back(new_member);
+
+    /*-----------------------------------------------------*\
+    | Update the universe tree view                         |
+    \*-----------------------------------------------------*/
+    UpdateTreeView();
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonRemoveController_clicked()
+{
+    /*-----------------------------------------------------*\
+    | Make selected item is not a top-level (universe)      |
+    \*-----------------------------------------------------*/
+    int selected_controller = ui->E131TreeView->indexOfTopLevelItem(ui->E131TreeView->currentItem());
+
+    if(selected_controller != -1)
+    {
+        return;
+    }
+
+    /*-----------------------------------------------------*\
+    | Get index of universe member                          |
+    \*-----------------------------------------------------*/
+    selected_controller     = ui->E131TreeView->currentIndex().row();
+    int selected_universe   = ui->E131TreeView->indexOfTopLevelItem(ui->E131TreeView->currentItem()->parent());
+
+    if(selected_universe == -1)
+    {
+        return;
+    }
+
+    /*-----------------------------------------------------*\
+    | Remove controller member from universe                |
+    \*-----------------------------------------------------*/
+    universe_list[selected_universe].members.erase(universe_list[selected_universe].members.begin() + selected_controller);
+
+    /*-----------------------------------------------------*\
+    | Update the universe tree view                         |
+    \*-----------------------------------------------------*/
+    UpdateTreeView();
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonAddUniverse_clicked()
+{
+    /*-----------------------------------------------------*\
+    | Get next universe value                               |
+    \*-----------------------------------------------------*/
+    unsigned int next_universe = 1;
+
+    if(universe_list.size() > 0)
+    {
+        next_universe = universe_list[universe_list.size() - 1].universe + 1;
+    }
+
+    /*-----------------------------------------------------*\
+    | Create and add new universe to list                   |
+    \*-----------------------------------------------------*/
+    universe_entry new_universe;
+
+    new_universe.universe = next_universe;
+
+    universe_list.push_back(new_universe);
+
+    /*-----------------------------------------------------*\
+    | Update the universe tree view                         |
+    \*-----------------------------------------------------*/
+    UpdateTreeView();
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonRemoveUniverse_clicked()
+{
+    /*-----------------------------------------------------*\
+    | Get index of universe                                 |
+    \*-----------------------------------------------------*/
+    int selected_universe   = ui->E131TreeView->indexOfTopLevelItem(ui->E131TreeView->currentItem());
+
+    if(selected_universe == -1)
+    {
+        return;
+    }
+
+    /*-----------------------------------------------------*\
+    | Remove universe                                       |
+    \*-----------------------------------------------------*/
+    universe_list.erase(universe_list.begin() + selected_universe);
+
+    /*-----------------------------------------------------*\
+    | Update the universe tree view                         |
+    \*-----------------------------------------------------*/
+    UpdateTreeView();
 }

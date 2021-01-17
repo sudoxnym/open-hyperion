@@ -20,7 +20,14 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="4" column="0" colspan="5">
+   <item row="3" column="4">
+    <widget class="QPushButton" name="ButtonStopReceiver">
+     <property name="text">
+      <string>Stop Receiver</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="2" colspan="3">
     <widget class="QTreeWidget" name="E131TreeView">
      <column>
       <property name="text">
@@ -29,17 +36,10 @@
      </column>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="PacketsReceivedValue">
+   <item row="0" column="0">
+    <widget class="QLabel" name="ReceiverStatusLabel">
      <property name="text">
-      <string>0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QLabel" name="ReceiverSourceValue">
-     <property name="text">
-      <string>Source</string>
+      <string>Receiver Status:</string>
      </property>
     </widget>
    </item>
@@ -50,10 +50,17 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="4">
-    <widget class="QPushButton" name="ButtonStopReceiver">
+   <item row="0" column="2">
+    <widget class="QLabel" name="ReceiverSourceLabel">
      <property name="text">
-      <string>Stop Receiver</string>
+      <string>Receiver Source:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QLabel" name="ReceiverSourceValue">
+     <property name="text">
+      <string>Source</string>
      </property>
     </widget>
    </item>
@@ -64,24 +71,17 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="PacketsReceivedValue">
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="4">
     <widget class="QPushButton" name="ButtonStartReceiver">
      <property name="text">
       <string>Start Receiver</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="ReceiverStatusLabel">
-     <property name="text">
-      <string>Receiver Status:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="ReceiverSourceLabel">
-     <property name="text">
-      <string>Receiver Source:</string>
      </property>
     </widget>
    </item>
@@ -95,6 +95,43 @@
      </property>
      <property name="checked">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QTreeWidget" name="ControllersTreeView">
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="ButtonAddController">
+     <property name="text">
+      <string>Add Controller</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QPushButton" name="ButtonRemoveController">
+     <property name="text">
+      <string>Remove Controller</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QPushButton" name="ButtonAddUniverse">
+     <property name="text">
+      <string>Add Universe</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3">
+    <widget class="QPushButton" name="ButtonRemoveUniverse">
+     <property name="text">
+      <string>Remove Universe</string>
      </property>
     </widget>
    </item>
