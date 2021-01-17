@@ -99,69 +99,6 @@ void OpenRGBE131ReceiverDialog::DeviceListChanged()
         ui->E131TreeView->clear();
         universe_list.clear();
 
-        for(unsigned int controller_idx = 0; controller_idx < resource_manager->GetRGBControllers().size(); controller_idx++)
-        {
-            RGBController* controller   = resource_manager->GetRGBControllers()[controller_idx];
-
-            // Determine if the controller has a Direct mode
-            bool has_direct = false;
-            for(unsigned int mode_idx = 0; mode_idx < controller->modes.size(); mode_idx++)
-            {
-                if(controller->modes[mode_idx].name == "Direct")
-                {
-                    has_direct = true;
-                    break;
-                }
-            }
-
-            // Only map controllers that have a Direct mode
-            if(has_direct)
-            {
-                unsigned int num_universes  = 1 + ((controller->leds.size() * 3) / 512);
-                unsigned int remaining_leds = controller->leds.size();
-                unsigned int start_led      = 0;
-
-                for(unsigned int universe_idx = 0; universe_idx < num_universes; universe_idx++)
-                {
-                    // For now, create universes sequentially per controller
-                    universe_entry new_entry;
-
-                    new_entry.universe = universe_list.size() + 1;
-
-                    // Add members as needed
-                    universe_member new_member;
-
-                    new_member.controller    = resource_manager->GetRGBControllers()[controller_idx];
-                    new_member.start_channel = 1;
-                    new_member.start_led     = start_led;
-                    new_member.num_leds      = remaining_leds;
-                    new_member.update        = false;
-
-                    // Limit the number of LEDs
-                    if(new_member.num_leds > MAX_LEDS_PER_UNIVERSE)
-                    {
-                        new_member.num_leds  = MAX_LEDS_PER_UNIVERSE;
-                    }
-
-                    // Update start LED
-                    start_led                = start_led + new_member.num_leds;
-
-                    // Update remaining LED count
-                    remaining_leds           = remaining_leds - new_member.num_leds;
-
-                    // Only set the update flag for the last universe of the controller
-                    if(universe_idx == (num_universes - 1))
-                    {
-                        new_member.update   = true;
-                    }
-
-                    new_entry.members.push_back(new_member);
-
-                    universe_list.push_back(new_entry);
-                }
-            }
-        }
-
         UpdateControllersTreeView();
         UpdateTreeView();
     }
@@ -283,6 +220,72 @@ void OpenRGBE131ReceiverDialog::UpdateTreeView()
     ui->E131TreeView->setStyleSheet("QLineEdit { border: none }");
 
     ui->E131TreeView->expandAll();
+}
+
+void OpenRGBE131ReceiverDialog::AutoMap()
+{
+    for(unsigned int controller_idx = 0; controller_idx < resource_manager->GetRGBControllers().size(); controller_idx++)
+    {
+        RGBController* controller   = resource_manager->GetRGBControllers()[controller_idx];
+
+        // Determine if the controller has a Direct mode
+        bool has_direct = false;
+        for(unsigned int mode_idx = 0; mode_idx < controller->modes.size(); mode_idx++)
+        {
+            if(controller->modes[mode_idx].name == "Direct")
+            {
+                has_direct = true;
+                break;
+            }
+        }
+
+        // Only map controllers that have a Direct mode
+        if(has_direct)
+        {
+            unsigned int num_universes  = 1 + ((controller->leds.size() * 3) / 512);
+            unsigned int remaining_leds = controller->leds.size();
+            unsigned int start_led      = 0;
+
+            for(unsigned int universe_idx = 0; universe_idx < num_universes; universe_idx++)
+            {
+                // For now, create universes sequentially per controller
+                universe_entry new_entry;
+
+                new_entry.universe = universe_list.size() + 1;
+
+                // Add members as needed
+                universe_member new_member;
+
+                new_member.controller    = resource_manager->GetRGBControllers()[controller_idx];
+                new_member.start_channel = 1;
+                new_member.start_led     = start_led;
+                new_member.num_leds      = remaining_leds;
+                new_member.update        = false;
+
+                // Limit the number of LEDs
+                if(new_member.num_leds > MAX_LEDS_PER_UNIVERSE)
+                {
+                    new_member.num_leds  = MAX_LEDS_PER_UNIVERSE;
+                }
+
+                // Update start LED
+                start_led                = start_led + new_member.num_leds;
+
+                // Update remaining LED count
+                remaining_leds           = remaining_leds - new_member.num_leds;
+
+                // Only set the update flag for the last universe of the controller
+                if(universe_idx == (num_universes - 1))
+                {
+                    new_member.update   = true;
+                }
+
+                new_entry.members.push_back(new_member);
+
+                universe_list.push_back(new_entry);
+            }
+        }
+    }
 }
 
 void OpenRGBE131ReceiverDialog::E131ReceiverThreadFunction()
@@ -662,6 +665,16 @@ void OpenRGBE131ReceiverDialog::on_ButtonRemoveUniverse_clicked()
     | Remove universe                                       |
     \*-----------------------------------------------------*/
     universe_list.erase(universe_list.begin() + selected_universe);
+
+    /*-----------------------------------------------------*\
+    | Update the universe tree view                         |
+    \*-----------------------------------------------------*/
+    UpdateTreeView();
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonAutoMap_clicked()
+{
+    AutoMap();
 
     /*-----------------------------------------------------*\
     | Update the universe tree view                         |

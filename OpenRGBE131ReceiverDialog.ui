@@ -135,6 +135,13 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="4">
+    <widget class="QPushButton" name="ButtonAutoMap">
+     <property name="text">
+      <string>Auto-Map</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

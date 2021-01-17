@@ -17,6 +17,8 @@ public:
     explicit OpenRGBE131ReceiverDialog(ResourceManager* manager, QWidget *parent = nullptr);
     ~OpenRGBE131ReceiverDialog();
 
+    void AutoMap();
+
     void E131ReceiverThreadFunction();
 
 public slots:
@@ -38,6 +40,8 @@ private slots:
     void on_ButtonAddUniverse_clicked();
 
     void on_ButtonRemoveUniverse_clicked();
+
+    void on_ButtonAutoMap_clicked();
 
 private:
     ResourceManager*                resource_manager;
