@@ -555,15 +555,27 @@ void OpenRGBE131ReceiverDialog::on_ButtonAddController_clicked()
     }
 
     /*-----------------------------------------------------*\
+    | Determine start channel                               |
+    \*-----------------------------------------------------*/
+    unsigned int start_channel  = 1;
+
+    if(universe_list[selected_universe].members.size() > 0)
+    {
+        universe_member last_member = universe_list[selected_universe].members[universe_list[selected_universe].members.size() - 1];
+        start_channel               = last_member.start_channel + (last_member.num_leds * 3);
+    }
+
+    /*-----------------------------------------------------*\
     | Add controller to universe                            |
     \*-----------------------------------------------------*/
     universe_member new_member;
 
     new_member.controller                   = resource_manager->GetRGBControllers()[selected_controller];
-    new_member.start_channel                = 1;
+    new_member.start_channel                = start_channel;
     new_member.start_led                    = 0;
-    new_member.num_leds                     = 0;
-    new_member.update                       = false;
+    new_member.num_leds                     = new_member.controller->colors.size();
+
+    new_member.update                       = true;
 
     universe_list[selected_universe].members.push_back(new_member);
 
