@@ -3,6 +3,7 @@
 
 #include <e131.h>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QSignalMapper>
 
 #include <fstream>
@@ -571,6 +572,38 @@ void OpenRGBE131ReceiverDialog::on_ButtonAddController_clicked()
     }
 
     /*-----------------------------------------------------*\
+    | Determine number of LEDs                              |
+    \*-----------------------------------------------------*/
+    unsigned int start_led      = 0;
+    unsigned int num_leds       = resource_manager->GetRGBControllers()[selected_controller]->colors.size();
+    unsigned int remaining_leds = num_leds;
+    bool         update         = false;
+
+    if((num_leds * 3) + start_channel > 512)
+    {
+        num_leds       = (512 - start_channel) / 3;
+        remaining_leds -= num_leds;
+        start_led      += num_leds;
+
+        QMessageBox::StandardButton reply;
+
+        reply = QMessageBox::question(this, "", "This controller is too large for the selected universe.  Do you want to map additional universes for this controller?", QMessageBox::Yes|QMessageBox::No);
+
+        if(reply == QMessageBox::Yes)
+        {
+            update  = false;
+        }
+        else
+        {
+            update  = true;
+        }
+    }
+    else
+    {
+        update = true;
+    }
+
+    /*-----------------------------------------------------*\
     | Add controller to universe                            |
     \*-----------------------------------------------------*/
     universe_member new_member;
@@ -578,11 +611,69 @@ void OpenRGBE131ReceiverDialog::on_ButtonAddController_clicked()
     new_member.controller                   = resource_manager->GetRGBControllers()[selected_controller];
     new_member.start_channel                = start_channel;
     new_member.start_led                    = 0;
-    new_member.num_leds                     = new_member.controller->colors.size();
+    new_member.num_leds                     = num_leds;
 
-    new_member.update                       = true;
+    new_member.update                       = update;
 
     universe_list[selected_universe].members.push_back(new_member);
+
+    /*-----------------------------------------------------*\
+    | Add additional universes for controller               |
+    \*-----------------------------------------------------*/
+    if(update == false)
+    {
+        while(remaining_leds > 0)
+        {
+            start_channel   = 1;
+            num_leds        = remaining_leds;
+
+            if((num_leds * 3) + start_channel > 512)
+            {
+                num_leds       = (512 - start_channel) / 3;
+            }
+
+            remaining_leds -= num_leds;
+
+            if(remaining_leds == 0)
+            {
+                update          = true;
+            }
+
+            /*-----------------------------------------------------*\
+            | Get next universe value                               |
+            \*-----------------------------------------------------*/
+            unsigned int next_universe = 1;
+
+            if(universe_list.size() > 0)
+            {
+                next_universe = universe_list[universe_list.size() - 1].universe + 1;
+            }
+
+            /*-----------------------------------------------------*\
+            | Create and add new universe to list                   |
+            \*-----------------------------------------------------*/
+            universe_entry new_universe;
+
+            new_universe.universe = next_universe;
+
+            /*-----------------------------------------------------*\
+            | Add selected controller member to new universe        |
+            \*-----------------------------------------------------*/
+            universe_member new_member;
+
+            new_member.controller                   = resource_manager->GetRGBControllers()[selected_controller];
+            new_member.start_channel                = 1;
+            new_member.start_led                    = start_led;
+            new_member.num_leds                     = num_leds;
+            new_member.update                       = update;
+
+            new_universe.members.push_back(new_member);
+
+            universe_list.push_back(new_universe);
+
+            start_led += num_leds;
+        }
+    }
 
     /*-----------------------------------------------------*\
     | Update the universe tree view                         |
