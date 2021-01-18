@@ -722,7 +722,7 @@ void OpenRGBE131ReceiverDialog::on_ButtonSaveMap_clicked()
     /*-----------------------------------------------------*\
     | Write out the JSON structure to a file                |
     \*-----------------------------------------------------*/
-    std::ofstream universe_file("E131UniverseMap.json", std::ios::out | std::ios::binary);
+    std::ofstream universe_file(resource_manager->GetConfigurationDirectory() + "/plugins/E131UniverseMap.json", std::ios::out | std::ios::binary);
 
     if(universe_file)
     {
@@ -749,7 +749,7 @@ void OpenRGBE131ReceiverDialog::on_ButtonLoadMap_clicked()
     /*---------------------------------------------------------*\
     | Open input file in binary mode                            |
     \*---------------------------------------------------------*/
-    std::ifstream universe_file("E131UniverseMap.json", std::ios::in | std::ios::binary);
+    std::ifstream universe_file(resource_manager->GetConfigurationDirectory() + "/plugins/E131UniverseMap.json", std::ios::in | std::ios::binary);
 
     /*---------------------------------------------------------*\
     | Read settings into JSON store                             |
