@@ -5,6 +5,8 @@
 #include <QLineEdit>
 #include <QSignalMapper>
 
+#include <fstream>
+
 #ifndef _WIN32
 #include <unistd.h>
 #define closesocket ::close
@@ -680,4 +682,56 @@ void OpenRGBE131ReceiverDialog::on_ButtonAutoMap_clicked()
     | Update the universe tree view                         |
     \*-----------------------------------------------------*/
     UpdateTreeView();
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonSaveMap_clicked()
+{
+    /*-----------------------------------------------------*\
+    | Create a JSON structure to hold the universe map      |
+    \*-----------------------------------------------------*/
+    json universe_map;
+
+    /*-----------------------------------------------------*\
+    | Loop through the universe list and add universe fields|
+    \*-----------------------------------------------------*/
+    for(unsigned int universe_index = 0; universe_index < universe_list.size(); universe_index++)
+    {
+        universe_entry universe = universe_list[universe_index];
+
+        universe_map["universes"][universe_index]["universe"] = universe.universe;
+
+        /*-----------------------------------------------------*\
+        | Loop through all members and add info fields          |
+        \*-----------------------------------------------------*/
+        for(unsigned int member_index = 0; member_index < universe.members.size(); member_index++)
+        {
+            universe_member member = universe.members[member_index];
+
+            universe_map["universes"][universe_index]["members"][member_index]["start_channel"]             = member.start_channel;
+            universe_map["universes"][universe_index]["members"][member_index]["start_led"]                 = member.start_led;
+            universe_map["universes"][universe_index]["members"][member_index]["num_leds"]                  = member.num_leds;
+            universe_map["universes"][universe_index]["members"][member_index]["update"]                    = member.update;
+            universe_map["universes"][universe_index]["members"][member_index]["controller_name"]           = member.controller->name;
+            universe_map["universes"][universe_index]["members"][member_index]["controller_description"]    = member.controller->description;
+            universe_map["universes"][universe_index]["members"][member_index]["controller_location"]       = member.controller->location;
+            universe_map["universes"][universe_index]["members"][member_index]["controller_serial"]         = member.controller->serial;
+            universe_map["universes"][universe_index]["members"][member_index]["controller_led_count"]      = member.controller->colors.size();
+        }
+    }
+
+    std::ofstream universe_file("E131UniverseMap.json", std::ios::out | std::ios::binary);
+
+    if(universe_file)
+    {
+        try
+        {
+            universe_file << universe_map.dump(4);
+        }
+        catch(std::exception e)
+        {
+
+        }
+
+        universe_file.close();
+    }
 }
