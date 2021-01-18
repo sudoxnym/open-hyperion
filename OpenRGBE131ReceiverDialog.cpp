@@ -719,6 +719,9 @@ void OpenRGBE131ReceiverDialog::on_ButtonSaveMap_clicked()
         }
     }
 
+    /*-----------------------------------------------------*\
+    | Write out the JSON structure to a file                |
+    \*-----------------------------------------------------*/
     std::ofstream universe_file("E131UniverseMap.json", std::ios::out | std::ios::binary);
 
     if(universe_file)
@@ -734,4 +737,159 @@ void OpenRGBE131ReceiverDialog::on_ButtonSaveMap_clicked()
 
         universe_file.close();
     }
+}
+
+void OpenRGBE131ReceiverDialog::on_ButtonLoadMap_clicked()
+{
+    /*-----------------------------------------------------*\
+    | Read in the JSON map from a file                      |
+    \*-----------------------------------------------------*/
+    json universe_map;
+
+    /*---------------------------------------------------------*\
+    | Open input file in binary mode                            |
+    \*---------------------------------------------------------*/
+    std::ifstream universe_file("E131UniverseMap.json", std::ios::in | std::ios::binary);
+
+    /*---------------------------------------------------------*\
+    | Read settings into JSON store                             |
+    \*---------------------------------------------------------*/
+    if(universe_file)
+    {
+        try
+        {
+            universe_file >> universe_map;
+        }
+        catch(std::exception e)
+        {
+            /*-------------------------------------------------*\
+            | If an exception was caught, that means the JSON   |
+            | parsing failed.  Clear out any data in the store  |
+            | as it is corrupt.                                 |
+            \*-------------------------------------------------*/
+            universe_map.clear();
+        }
+    }
+
+    /*---------------------------------------------------------*\
+    | Clear the universe map                                    |
+    \*---------------------------------------------------------*/
+    universe_list.clear();
+
+    /*---------------------------------------------------------*\
+    | Loop through all saved universes and create list entries  |
+    \*---------------------------------------------------------*/
+    if(universe_map.contains("universes"))
+    {
+        for(unsigned int universe_index = 0; universe_index < universe_map["universes"].size(); universe_index++)
+        {
+            if(universe_map["universes"][universe_index].contains("universe"))
+            {
+                universe_entry new_universe;
+
+                new_universe.universe   = universe_map["universes"][universe_index]["universe"];
+
+                if(universe_map["universes"][universe_index].contains("members"))
+                {
+                    for(unsigned int member_index = 0; member_index < universe_map["universes"][universe_index]["members"].size(); member_index++)
+                    {
+                        universe_member new_member;
+
+                        /*---------------------------------------------------------*\
+                        | Fill in default values in case entries are missing        |
+                        \*---------------------------------------------------------*/
+                        new_member.controller           = NULL;
+                        new_member.start_channel        = 1;
+                        new_member.start_led            = 0;
+                        new_member.num_leds             = 0;
+                        new_member.update               = false;
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("start_channel"))
+                        {
+                            new_member.start_channel    = universe_map["universes"][universe_index]["members"][member_index]["start_channel"];
+                        }
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("start_led"))
+                        {
+                            new_member.start_led        = universe_map["universes"][universe_index]["members"][member_index]["start_led"];
+                        }
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("num_leds"))
+                        {
+                            new_member.num_leds         = universe_map["universes"][universe_index]["members"][member_index]["num_leds"];
+                        }
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("update"))
+                        {
+                            new_member.update           = universe_map["universes"][universe_index]["members"][member_index]["update"];
+                        }
+
+                        /*---------------------------------------------------------*\
+                        | Get controller information                                |
+                        \*---------------------------------------------------------*/
+                        std::string     controller_name         = "";
+                        std::string     controller_description  = "";
+                        std::string     controller_location     = "";
+                        std::string     controller_serial       = "";
+                        unsigned int    controller_led_count    = 0;
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("controller_name"))
+                        {
+                            controller_name             = universe_map["universes"][universe_index]["members"][member_index]["controller_name"];
+                        }
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("controller_description"))
+                        {
+                            controller_description      = universe_map["universes"][universe_index]["members"][member_index]["controller_description"];
+                        }
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("controller_location"))
+                        {
+                            controller_location         = universe_map["universes"][universe_index]["members"][member_index]["controller_location"];
+                        }
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("controller_serial"))
+                        {
+                            controller_serial           = universe_map["universes"][universe_index]["members"][member_index]["controller_serial"];
+                        }
+
+                        if(universe_map["universes"][universe_index]["members"][member_index].contains("controller_led_count"))
+                        {
+                            controller_led_count        = universe_map["universes"][universe_index]["members"][member_index]["controller_led_count"];
+                        }
+
+                        /*---------------------------------------------------------*\
+                        | Search the controller list for a matching controller      |
+                        \*---------------------------------------------------------*/
+                        for(unsigned int controller_index = 0; controller_index < resource_manager->GetRGBControllers().size(); controller_index++)
+                        {
+                            if((resource_manager->GetRGBControllers()[controller_index]->name          == controller_name)
+                             &&(resource_manager->GetRGBControllers()[controller_index]->description   == controller_description)
+                             &&(resource_manager->GetRGBControllers()[controller_index]->location      == controller_location)
+                             &&(resource_manager->GetRGBControllers()[controller_index]->serial        == controller_serial)
+                             &&(resource_manager->GetRGBControllers()[controller_index]->colors.size() == controller_led_count))
+                            {
+                                new_member.controller   = resource_manager->GetRGBControllers()[controller_index];
+                            }
+                        }
+
+                        /*---------------------------------------------------------*\
+                        | If a controller was found, add the member to the universe |
+                        \*---------------------------------------------------------*/
+                        if(new_member.controller != NULL)
+                        {
+                            new_universe.members.push_back(new_member);
+                        }
+                    }
+                }
+
+                universe_list.push_back(new_universe);
+            }
+        }
+    }
+
+    /*-----------------------------------------------------*\
+    | Update the universe tree view                         |
+    \*-----------------------------------------------------*/
+    UpdateTreeView();
 }

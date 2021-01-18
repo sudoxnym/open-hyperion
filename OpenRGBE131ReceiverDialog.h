@@ -45,6 +45,8 @@ private slots:
 
     void on_ButtonSaveMap_clicked();
 
+    void on_ButtonLoadMap_clicked();
+
 private:
     ResourceManager*                resource_manager;
     Ui::OpenRGBE131ReceiverDialog  *ui;
