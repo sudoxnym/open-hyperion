@@ -20,16 +20,17 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="3">
-    <widget class="QCheckBox" name="EnableMulticastBox">
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
+   <item row="0" column="5">
+    <widget class="QPushButton" name="ButtonStartReceiver">
      <property name="text">
-      <string>Enable Multicast</string>
+      <string>Start Receiver</string>
      </property>
-     <property name="checked">
-      <bool>true</bool>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QPushButton" name="ButtonRemoveController">
+     <property name="text">
+      <string>Remove Controller</string>
      </property>
     </widget>
    </item>
@@ -42,68 +43,10 @@
      </column>
     </widget>
    </item>
-   <item row="4" column="2">
-    <widget class="QPushButton" name="ButtonAddUniverse">
-     <property name="text">
-      <string>Add Universe</string>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="2" colspan="3">
-    <widget class="QTreeWidget" name="E131TreeView">
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
-    </widget>
-   </item>
-   <item row="4" column="4">
-    <widget class="QPushButton" name="ButtonAutoMap">
-     <property name="text">
-      <string>Auto-Map</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="ReceiverStatusLabel">
-     <property name="text">
-      <string>Receiver Status:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="3">
-    <widget class="QLabel" name="ReceiverSourceValue">
-     <property name="text">
-      <string>Source</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
-    <widget class="QPushButton" name="ButtonRemoveController">
-     <property name="text">
-      <string>Remove Controller</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
-    <widget class="QPushButton" name="ButtonStartReceiver">
-     <property name="text">
-      <string>Start Receiver</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="1">
     <widget class="QLabel" name="PacketsReceivedValue">
      <property name="text">
       <string>0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="3">
-    <widget class="QPushButton" name="ButtonRemoveUniverse">
-     <property name="text">
-      <string>Remove Universe</string>
      </property>
     </widget>
    </item>
@@ -114,17 +57,19 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="4">
-    <widget class="QPushButton" name="ButtonStopReceiver">
-     <property name="text">
-      <string>Stop Receiver</string>
-     </property>
+   <item row="6" column="3" colspan="3">
+    <widget class="QTreeWidget" name="E131TreeView">
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QPushButton" name="ButtonAddController">
+   <item row="0" column="0">
+    <widget class="QLabel" name="ReceiverStatusLabel">
      <property name="text">
-      <string>Add Controller</string>
+      <string>Receiver Status:</string>
      </property>
     </widget>
    </item>
@@ -135,24 +80,79 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
+   <item row="3" column="5">
+    <widget class="QPushButton" name="ButtonStopReceiver">
+     <property name="text">
+      <string>Stop Receiver</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QPushButton" name="ButtonAddController">
+     <property name="text">
+      <string>Add Controller</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QLabel" name="ReceiverSourceLabel">
      <property name="text">
       <string>Receiver Source:</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="4">
+   <item row="4" column="1">
+    <widget class="QLabel" name="ReceiverSourceValue">
+     <property name="text">
+      <string>Source</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
+    <widget class="QCheckBox" name="EnableMulticastBox">
+     <property name="layoutDirection">
+      <enum>Qt::LeftToRight</enum>
+     </property>
+     <property name="text">
+      <string>Enable Multicast</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="5">
     <widget class="QPushButton" name="ButtonLoadMap">
      <property name="text">
       <string>Load Map</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="3">
+   <item row="4" column="4">
     <widget class="QPushButton" name="ButtonSaveMap">
      <property name="text">
       <string>Save Map</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3">
+    <widget class="QPushButton" name="ButtonAddUniverse">
+     <property name="text">
+      <string>Add Universe</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="4">
+    <widget class="QPushButton" name="ButtonRemoveUniverse">
+     <property name="text">
+      <string>Remove Universe</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="5">
+    <widget class="QPushButton" name="ButtonAutoMap">
+     <property name="text">
+      <string>Auto-Map</string>
      </property>
     </widget>
    </item>
