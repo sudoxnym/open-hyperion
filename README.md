@@ -15,7 +15,14 @@ Copy the plugin to your OpenRGB plugins directory.
 
 # Usage
 
-Once installed, you will have an E1.31 Receiver tab in OpenRGB.  Select this tab.  Once detection is complete, the list of universes should be populated.  After this, you can simply click the Start Receiver button and OpenRGB is ready to receive E1.31 packets.
+Once installed, you will have an E1.31 Receiver tab in OpenRGB.  Select this tab.  Once detection is complete, the list of controllers on the left should be populated.  You must map controllers to universes.  You may do this manually by clicking the Add Universe button to create a universe, then selecting both the universe and a controller from the left, then clicking Add Controller to add the controller to the universe.  You can also automatically map the controllers by clicking the Auto-Map button, which assigns one controller to each universe, automatically creating additoinal universes for controllers that do not fit within a single universe.  After the mapping is set up, you can simply click the Start Receiver button and OpenRGB is ready to receive E1.31 packets.  You can save the mapping with the Save Map button so that you can load it back next time with the Load Map button.
+
+# Tested E1.31 software
+
+* Vixen 3 (http://www.vixenlights.com/)
+* Jinx! (http://www.live-leds.de/downloads/)
+* sACNView (https://sacnview.org/)
+* QLC+ (https://www.qlcplus.org/index.html)
 
 # Screenshot
 
