@@ -19,4 +19,4 @@ Once installed, you will have an E1.31 Receiver tab in OpenRGB.  Select this tab
 
 # Screenshot
 
-![image](/uploads/7aa973dfa45a98ffa394d748a6125d44/image.png)
+![image](/uploads/e91269ac93bb69ce40955babf8e7af7e/image.png)
