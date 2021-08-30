@@ -10,29 +10,29 @@
 #include "OpenRGBE131ReceiverPlugin.h"
 #include "OpenRGBE131ReceiverDialog.h"
 
-/*-----------------------------------------*\
-| Initialize                                |
-|                                           |
-|  This function must be present in all     |
-|  OpenRGB plugins.  It defines the plugin  |
-|  name, description, location, and other   |
-|  plugin information.  It creates the tab  |
-|  label and is the entry point for plugin  |
-|  code                                     |
-\*-----------------------------------------*/
-OpenRGBPluginInfo OpenRGBPlugin::Initialize(bool dark_theme, ResourceManager* resource_manager_ptr)
+OpenRGBPluginInfo OpenRGBPlugin::GetPluginInfo()
 {
-    info.PluginName         = "E1.31 Receiver";
-    info.PluginDescription  = "OpenRGB E1.31 Receiver Plugin";
-    info.PluginLocation     = "TopTabBar";
-    info.HasCustom          = false;
-    info.PluginLabel        = new QLabel();
+    OpenRGBPluginInfo info;
 
-    /*-----------------------------------------------------*\
-    | Set the label text                                    |
-    \*-----------------------------------------------------*/
-    info.PluginLabel->setText("E1.31 Receiver");
+    info.Name           = "OpenRGB E1.31 Receiver Plugin";
+    info.Description    = "Receive E1.31 lighting control data from external applications to control OpenRGB devices";
+    info.Version        = "0";
+    info.Commit         = "";
+    info.URL            = "https://gitlab.com/OpenRGBDevelopers/OpenRGBE131ReceiverPlugin";
 
+    info.Location       = OPENRGB_PLUGIN_LOCATION_TOP;
+    info.Label          = "E1.31 Receiver";
+
+    return(info);
+}
+
+unsigned int OpenRGBPlugin::GetPluginAPIVersion()
+{
+    return(OPENRGB_PLUGIN_API_VERSION);
+}
+
+void OpenRGBPlugin::Load(bool dark_theme, ResourceManager* resource_manager_ptr)
+{
     /*-----------------------------------------------------*\
     | Save the arguments to Initialize based on what you    |
     | need for this plugin's functionality.  In this example|
@@ -40,26 +40,27 @@ OpenRGBPluginInfo OpenRGBPlugin::Initialize(bool dark_theme, ResourceManager* re
     | list, so save the Resource Manager pointer locally.   |
     \*-----------------------------------------------------*/
     resource_manager = resource_manager_ptr;
-
-    return info;
 }
 
-/*-----------------------------------------*\
-| CreateGUI                                 |
-|                                           |
-|  This function must be present in all     |
-|  OpenRGB plugins.  It creates the QWidget |
-|  that represents the plugin tab's content |
-\*-----------------------------------------*/
-QWidget* OpenRGBPlugin::CreateGUI(QWidget* parent)
+QWidget* OpenRGBPlugin::GetWidget()
 {
     /*-----------------------------------------------------*\
     | Create the main widget for this plugin tab            |
     \*-----------------------------------------------------*/
-    QWidget* plugin_widget = new OpenRGBE131ReceiverDialog(resource_manager, parent);
+    QWidget* plugin_widget = new OpenRGBE131ReceiverDialog(resource_manager, nullptr);
 
     /*-----------------------------------------------------*\
     | The CreateGUI function must return the main widget    |
     \*-----------------------------------------------------*/
     return plugin_widget;
+}
+
+QMenu* OpenRGBPlugin::GetTrayMenu()
+{
+    return(nullptr);
+}
+
+void OpenRGBPlugin::Unload()
+{
+
 }

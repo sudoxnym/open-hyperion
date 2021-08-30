@@ -24,12 +24,21 @@ class OpenRGBPlugin : public QObject, public OpenRGBPluginInterface
     Q_INTERFACES(OpenRGBPluginInterface)
 
 public:
-    virtual                        ~OpenRGBPlugin() {};
+    virtual                    ~OpenRGBPlugin() {}
 
-    virtual OpenRGBPluginInfo       Initialize(bool dark_theme, ResourceManager* resource_manager_ptr) override;
+    /*-------------------------------------------------------------------------------------------------*\
+    | Plugin Information                                                                                |
+    \*-------------------------------------------------------------------------------------------------*/
+    virtual OpenRGBPluginInfo   GetPluginInfo()                                                     override;
+    virtual unsigned int        GetPluginAPIVersion()                                               override;
 
-    virtual QWidget                *CreateGUI(QWidget* parent) override;
-
+    /*-------------------------------------------------------------------------------------------------*\
+    | Plugin Functionality                                                                              |
+    \*-------------------------------------------------------------------------------------------------*/
+    virtual void                Load(bool dark_theme, ResourceManager* resource_manager_ptr)        override;
+    virtual QWidget*            GetWidget()                                                         override;
+    virtual QMenu*              GetTrayMenu()                                                       override;
+    virtual void                Unload()                                                            override;
 private:
     ResourceManager*        resource_manager;
 };
