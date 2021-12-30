@@ -91,6 +91,12 @@ OpenRGBE131ReceiverDialog::OpenRGBE131ReceiverDialog(ResourceManager* manager, Q
 
 OpenRGBE131ReceiverDialog::~OpenRGBE131ReceiverDialog()
 {
+    /*-------------------------------------------------*\
+    | Register device list change callback              |
+    \*-------------------------------------------------*/
+    resource_manager->UnregisterDeviceListChangeCallback(DeviceListChanged_Callback, this);
+    resource_manager->UnregisterDetectionProgressCallback(DeviceListChanged_Callback, this);
+    
     delete ui;
 }
 
