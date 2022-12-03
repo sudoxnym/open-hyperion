@@ -26,26 +26,17 @@ public slots:
 
 private slots:
     void on_ButtonStartReceiver_clicked();
-
     void on_ButtonStopReceiver_clicked();
-
-    void on_LineEdit_updated(QObject* lineedit_argument);
-
-    void on_CheckBox_updated(QObject* checkbox_argument);
-
     void on_ButtonAddController_clicked();
-
     void on_ButtonRemoveController_clicked();
-
     void on_ButtonAddUniverse_clicked();
-
     void on_ButtonRemoveUniverse_clicked();
-
     void on_ButtonAutoMap_clicked();
-
     void on_ButtonSaveMap_clicked();
-
     void on_ButtonLoadMap_clicked();
+
+    void LineEdit_updated_slot(QObject* lineedit_argument);
+    void CheckBox_updated_slot(QObject* checkbox_argument);
 
 private:
     ResourceManager*                resource_manager;

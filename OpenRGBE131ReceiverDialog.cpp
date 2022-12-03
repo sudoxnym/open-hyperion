@@ -148,13 +148,13 @@ void OpenRGBE131ReceiverDialog::UpdateTreeView()
     | Create a signal mapper for LineEdit fields            |
     \*-----------------------------------------------------*/
     QSignalMapper* LineEditMapper = new QSignalMapper(this);
-    connect(LineEditMapper, SIGNAL(mapped(QObject *)), this, SLOT(on_LineEdit_updated(QObject *)));
+    connect(LineEditMapper, SIGNAL(mapped(QObject *)), this, SLOT(LineEdit_updated_slot(QObject *)));
 
     /*-----------------------------------------------------*\
     | Create a signal mapper for CheckBox fields            |
     \*-----------------------------------------------------*/
     QSignalMapper* CheckBoxMapper = new QSignalMapper(this);
-    connect(CheckBoxMapper, SIGNAL(mapped(QObject *)), this, SLOT(on_CheckBox_updated(QObject *)));
+    connect(CheckBoxMapper, SIGNAL(mapped(QObject *)), this, SLOT(CheckBox_updated_slot(QObject *)));
 
     for(unsigned int universe_idx = 0; universe_idx < universe_list.size(); universe_idx++)
     {
@@ -504,7 +504,7 @@ void OpenRGBE131ReceiverDialog::on_ButtonStopReceiver_clicked()
     UpdateOnlineStatus();
 }
 
-void OpenRGBE131ReceiverDialog::on_LineEdit_updated(QObject* lineedit_argument)
+void OpenRGBE131ReceiverDialog::LineEdit_updated_slot(QObject* lineedit_argument)
 {
     /*-----------------------------------------------------*\
     | Update the parameter                                  |
@@ -532,7 +532,7 @@ void OpenRGBE131ReceiverDialog::on_LineEdit_updated(QObject* lineedit_argument)
     }
 }
 
-void OpenRGBE131ReceiverDialog::on_CheckBox_updated(QObject* checkbox_argument)
+void OpenRGBE131ReceiverDialog::CheckBox_updated_slot(QObject* checkbox_argument)
 {
     /*-----------------------------------------------------*\
     | Update the parameter                                  |

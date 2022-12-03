@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>OpenRGBE131ReceiverPlugin.png</file>
+    </qresource>
+</RCC>

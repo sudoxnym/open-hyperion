@@ -16,12 +16,14 @@ OpenRGBPluginInfo OpenRGBPlugin::GetPluginInfo()
 
     info.Name           = "OpenRGB E1.31 Receiver Plugin";
     info.Description    = "Receive E1.31 lighting control data from external applications to control OpenRGB devices";
-    info.Version        = "0";
-    info.Commit         = "";
+    info.Version        = VERSION_STRING;
+    info.Commit         = GIT_COMMIT_ID;
     info.URL            = "https://gitlab.com/OpenRGBDevelopers/OpenRGBE131ReceiverPlugin";
 
     info.Location       = OPENRGB_PLUGIN_LOCATION_TOP;
     info.Label          = "E1.31 Receiver";
+    info.TabIcon.load(":/OpenRGBE131ReceiverPlugin.png");
+    info.Icon.load(":/OpenRGBE131ReceiverPlugin.png");
 
     return(info);
 }

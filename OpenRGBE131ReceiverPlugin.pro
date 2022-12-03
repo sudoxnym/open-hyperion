@@ -14,10 +14,20 @@ QT +=                                                                           
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+
+#-----------------------------------------------------------------------------------------------#
+# Automatically generated build information                                                     #
+#-----------------------------------------------------------------------------------------------#
+PLUGIN_VERSION  = 0.8
+GIT_COMMIT_ID   = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PRO_FILE_PWD_ rev-parse HEAD)
+
+DEFINES +=                                                                                      \
+    VERSION_STRING=\\"\"\"$$PLUGIN_VERSION\\"\"\"                                               \
+    GIT_COMMIT_ID=\\"\"\"$$GIT_COMMIT_ID\\"\"\"
+
 #-----------------------------------------------------------------------------------------------#
 # Application Configuration                                                                     #
 #-----------------------------------------------------------------------------------------------#
-
 TEMPLATE = lib
 DEFINES += ORGBEXAMPLEPLUGIN_LIBRARY
 
@@ -106,3 +116,6 @@ macx: {
     CONFIG += c++17
     LIBS += -framework OpenAL
 }
+
+RESOURCES += \
+    resources.qrc
