@@ -14,6 +14,11 @@ QT +=                                                                           
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+win32:CONFIG += c++17
+
+unix:!macx {
+  QMAKE_CXXFLAGS += -std=c++17
+}
 
 #-----------------------------------------------------------------------------------------------#
 # Automatically generated build information                                                     #
@@ -30,8 +35,6 @@ DEFINES +=                                                                      
 #-----------------------------------------------------------------------------------------------#
 TEMPLATE = lib
 DEFINES += ORGBEXAMPLEPLUGIN_LIBRARY
-
-CONFIG += c++11
 
 #-----------------------------------------------------------------------------------------------#
 # Plugin Project Files                                                                          #
