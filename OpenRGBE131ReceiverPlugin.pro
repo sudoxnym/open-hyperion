@@ -61,6 +61,8 @@ INCLUDEPATH +=                                                                  
     OpenRGB/i2c_smbus                                                                           \
     OpenRGB/net_port                                                                            \
     OpenRGB/RGBController                                                                       \
+    OpenRGB/dependencies/hidapi                                                                 \
+    OpenRGB/hidapi_wrapper                                                                      \
 
 HEADERS +=                                                                                      \
     OpenRGB/NetworkClient.h                                                                     \
