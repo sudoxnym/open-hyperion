@@ -23,7 +23,7 @@ unix:!macx {
 #-----------------------------------------------------------------------------------------------#
 # Automatically generated build information                                                     #
 #-----------------------------------------------------------------------------------------------#
-PLUGIN_VERSION  = 0.81
+PLUGIN_VERSION  = 0.9
 GIT_COMMIT_ID   = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PRO_FILE_PWD_ rev-parse HEAD)
 
 DEFINES +=                                                                                      \
