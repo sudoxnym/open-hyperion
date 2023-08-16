@@ -1,6 +1,12 @@
 # OpenRGB E1.31 Receiver Plugin
 
 This is a plugin for OpenRGB that adds E1.31 integration.  E1.31 is an industry-standard lighting protocol used for all sorts of lighting control and is supported by a wide variety of lighting control software.  E1.31 is often used for sequenced light shows such as Christmas light displays with music.  This plugin allows you to control all of your OpenRGB-supported hardware from these lighting control programs by turning your OpenRGB setup into an E1.31 receiver.
+# Stable (0.9)
+
+* [Windows 64](https://gitlab.com/OpenRGBDevelopers/OpenRGBE131ReceiverPlugin/-/jobs/4632325324/artifacts/download)
+* [Linux 64](https://gitlab.com/OpenRGBDevelopers/OpenRGBE131ReceiverPlugin/-/jobs/4632325321/artifacts/download)
+* [MacOS ARM64](https://gitlab.com/OpenRGBDevelopers/OpenRGBE131ReceiverPlugin/-/jobs/4632325325/artifacts/download)
+* [MacOS Intel](https://gitlab.com/OpenRGBDevelopers/OpenRGBE131ReceiverPlugin/-/jobs/4632421480/artifacts/download)
 
 # Building
 
