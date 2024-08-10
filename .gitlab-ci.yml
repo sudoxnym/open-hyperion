@@ -3,6 +3,7 @@
 #-----------------------------------------------------------------------#
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  GIT_DEPTH: 1
 
 .shared_windows_runners:
   tags:
@@ -18,45 +19,97 @@ before_script:
 #reusable templates
 .ccache_init: &ccache_init
   before_script:
-    - apt update
-    - apt install -y build-essential qtcreator qt5-default qtdeclarative5-dev qtwebengine5-dev libusb-1.0-0-dev libhidapi-dev pkgconf wget git
+    - export QT_SELECT=qt5
+    - export APPIMAGE_EXTRACT_AND_RUN=1
 
 #-----------------------------------------------------------------------#
-# Linux (AppImage) 32-bit Build Target                                  #
+# Linux i386 Build Target                                               #
 #-----------------------------------------------------------------------#
-build_linux_32:
+"Linux i386":
   <<: *ccache_init
-  image: i386/ubuntu:bionic
+  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-i386
+  tags:
+  - linux
+  - i386
   stage: build
   script:
+  - export QT_SELECT=qt5
   - export $(dpkg-architecture)
   - ./scripts/build-plugin.sh
-  
+
   artifacts:
+    name: "${CI_PROJECT_NAME}_Linux_i386_${CI_COMMIT_SHORT_SHA}"
     paths:
-    - libOpenRGBE131ReceiverPlugin.so.1.0.0
+    - ./libOpenRGBE131ReceiverPlugin.so
     expire_in: 30 days
 
 #-----------------------------------------------------------------------#
-# Linux (AppImage) 64-bit Build Target                                  #
+# Linux amd64 Build Target                                              #
 #-----------------------------------------------------------------------#
-build_linux_64:
+"Linux amd64":
   <<: *ccache_init
-  image: ubuntu:bionic
+  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-amd64
+  tags:
+  - linux
+  - amd64
   stage: build
   script:
+  - export QT_SELECT=qt5
   - export $(dpkg-architecture)
   - ./scripts/build-plugin.sh
-  
+
   artifacts:
+    name: "${CI_PROJECT_NAME}_Linux_amd64_${CI_COMMIT_SHORT_SHA}"
     paths:
-    - libOpenRGBE131ReceiverPlugin.so.1.0.0
+    - ./libOpenRGBE131ReceiverPlugin.so
+    expire_in: 30 days
+
+#-----------------------------------------------------------------------#
+# Linux armhf Build Target                                              #
+#-----------------------------------------------------------------------#
+"Linux armhf":
+  <<: *ccache_init
+  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-armhf
+  tags:
+  - linux
+  - armhf
+  stage: build
+  script:
+  - export QT_SELECT=qt5
+  - export $(dpkg-architecture)
+  - ./scripts/build-plugin.sh
+
+  artifacts:
+    name: "${CI_PROJECT_NAME}_Linux_armhf_${CI_COMMIT_SHORT_SHA}"
+    paths:
+    - ./libOpenRGBE131ReceiverPlugin.so
+    expire_in: 30 days
+
+#-----------------------------------------------------------------------#
+# Linux arm64 Build Target                                              #
+#-----------------------------------------------------------------------#
+"Linux arm64":
+  <<: *ccache_init
+  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-arm64
+  tags:
+  - linux
+  - arm64
+  stage: build
+  script:
+  - export QT_SELECT=qt5
+  - export $(dpkg-architecture)
+  - ./scripts/build-plugin.sh
+
+  artifacts:
+    name: "${CI_PROJECT_NAME}_Linux_arm64_${CI_COMMIT_SHORT_SHA}"
+    paths:
+    - ./libOpenRGBE131ReceiverPlugin.so
     expire_in: 30 days
 
 #-----------------------------------------------------------------------#
 # Windows (32-bit) Build Target                                         #
 #-----------------------------------------------------------------------#
-build_windows_32:
+"Windows 32":
   extends:
   - .shared_windows_runners
   stage: build
@@ -117,7 +170,7 @@ build_windows_32:
 #-----------------------------------------------------------------------#
 # Windows (64-bit) Build Target                                         #
 #-----------------------------------------------------------------------#
-build_windows_64:
+"Windows 64":
   extends:
   - .shared_windows_runners
   stage: build
@@ -178,7 +231,7 @@ build_windows_64:
 #-----------------------------------------------------------------------#
 # MacOS Build Target                                                    #
 #-----------------------------------------------------------------------#
-build_macos_arm64:
+"MacOS ARM64":
   tags:
   - macos
   stage: build
@@ -186,14 +239,14 @@ build_macos_arm64:
   - eval $(/opt/homebrew/bin/brew shellenv)
   - qmake OpenRGBE131ReceiverPlugin.pro
   - make -j16
-  - install_name_tool libOpenRGBE131ReceiverPlugin.1.0.0.dylib -change /opt/homebrew/opt/qt@5/lib/QtWidgets.framework/Versions/5/QtWidgets @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets
-  - install_name_tool libOpenRGBE131ReceiverPlugin.1.0.0.dylib -change /opt/homebrew/opt/qt@5/lib/QtGui.framework/Versions/5/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui
-  - install_name_tool libOpenRGBE131ReceiverPlugin.1.0.0.dylib -change /opt/homebrew/opt/qt@5/lib/QtCore.framework/Versions/5/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore
-  - codesign --force --verify -s OpenRGB libOpenRGBE131ReceiverPlugin.1.0.0.dylib
+  - install_name_tool libOpenRGBE131ReceiverPlugin.dylib -change /opt/homebrew/opt/qt@5/lib/QtWidgets.framework/Versions/5/QtWidgets @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets
+  - install_name_tool libOpenRGBE131ReceiverPlugin.dylib -change /opt/homebrew/opt/qt@5/lib/QtGui.framework/Versions/5/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui
+  - install_name_tool libOpenRGBE131ReceiverPlugin.dylib -change /opt/homebrew/opt/qt@5/lib/QtCore.framework/Versions/5/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore
+  - codesign --force --verify -s OpenRGB libOpenRGBE131ReceiverPlugin.dylib
 
   artifacts:
     paths:
-    - libOpenRGBE131ReceiverPlugin.1.0.0.dylib
+    - libOpenRGBE131ReceiverPlugin.dylib
     expire_in: 30 days
 
   rules:
@@ -202,7 +255,7 @@ build_macos_arm64:
   - if: '$BUILD_MACOS =~ /.+/'
     when: on_success
 
-build_macos_intel:
+"MacOS Intel":
   tags:
   - macos
   stage: build
@@ -210,13 +263,13 @@ build_macos_intel:
   - eval $(/usr/local/bin/brew shellenv)
   - arch -x86_64 /usr/local/bin/qmake OpenRGBE131ReceiverPlugin.pro
   - arch -x86_64 make -j16
-  - arch -x86_64 install_name_tool libOpenRGBE131ReceiverPlugin.1.0.0.dylib -change /usr/local/bin/opt/qt@5/lib/QtWidgets.framework/Versions/5/QtWidgets @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets
-  - arch -x86_64 install_name_tool libOpenRGBE131ReceiverPlugin.1.0.0.dylib -change /usr/local/bin/opt/qt@5/lib/QtGui.framework/Versions/5/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui
-  - arch -x86_64 install_name_tool libOpenRGBE131ReceiverPlugin.1.0.0.dylib -change /usr/local/bin/opt/qt@5/lib/QtCore.framework/Versions/5/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore
-  - arch -x86_64 codesign --force --verify -s OpenRGB libOpenRGBE131ReceiverPlugin.1.0.0.dylib
+  - arch -x86_64 install_name_tool libOpenRGBE131ReceiverPlugin.dylib -change /usr/local/bin/opt/qt@5/lib/QtWidgets.framework/Versions/5/QtWidgets @executable_path/../Frameworks/QtWidgets.framework/Versions/5/QtWidgets
+  - arch -x86_64 install_name_tool libOpenRGBE131ReceiverPlugin.dylib -change /usr/local/bin/opt/qt@5/lib/QtGui.framework/Versions/5/QtGui @executable_path/../Frameworks/QtGui.framework/Versions/5/QtGui
+  - arch -x86_64 install_name_tool libOpenRGBE131ReceiverPlugin.dylib -change /usr/local/bin/opt/qt@5/lib/QtCore.framework/Versions/5/QtCore @executable_path/../Frameworks/QtCore.framework/Versions/5/QtCore
+  - arch -x86_64 codesign --force --verify -s OpenRGB libOpenRGBE131ReceiverPlugin.dylib
   artifacts:
     paths:
-    - libOpenRGBE131ReceiverPlugin.1.0.0.dylib
+    - libOpenRGBE131ReceiverPlugin.dylib
     expire_in: 30 days
 
   rules:

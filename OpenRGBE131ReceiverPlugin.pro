@@ -11,30 +11,37 @@
 QT +=                                                                                           \
     core                                                                                        \
     gui                                                                                         \
+    widgets                                                                                     \
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-win32:CONFIG += c++17
-
-unix:!macx {
-  QMAKE_CXXFLAGS += -std=c++17
-}
+DEFINES += ORGBEXAMPLEPLUGIN_LIBRARY
+TEMPLATE = lib
 
 #-----------------------------------------------------------------------------------------------#
-# Automatically generated build information                                                     #
+# Build Configuration                                                                           #
 #-----------------------------------------------------------------------------------------------#
-PLUGIN_VERSION  = 0.9
-GIT_COMMIT_ID   = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PRO_FILE_PWD_ rev-parse HEAD)
-
-DEFINES +=                                                                                      \
-    VERSION_STRING=\\"\"\"$$PLUGIN_VERSION\\"\"\"                                               \
-    GIT_COMMIT_ID=\\"\"\"$$GIT_COMMIT_ID\\"\"\"
+CONFIG +=                                                                                       \
+    plugin                                                                                      \
+    silent                                                                                      \
 
 #-----------------------------------------------------------------------------------------------#
 # Application Configuration                                                                     #
 #-----------------------------------------------------------------------------------------------#
-TEMPLATE = lib
-DEFINES += ORGBEXAMPLEPLUGIN_LIBRARY
+MAJOR           = 0
+MINOR           = 9
+REVISION        = 1
+PLUGIN_VERSION  = $$MAJOR"."$$MINOR$$REVISION
+
+#-----------------------------------------------------------------------------------------------#
+# Automatically generated build information                                                     #
+#-----------------------------------------------------------------------------------------------#
+GIT_COMMIT_ID   = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PRO_FILE_PWD_ rev-parse HEAD)
+
+#-----------------------------------------------------------------------------------------------#
+# Inject vars in defines                                                                        #
+#-----------------------------------------------------------------------------------------------#
+DEFINES +=                                                                                      \
+    VERSION_STRING=\\"\"\"$$PLUGIN_VERSION\\"\"\"                                               \
+    GIT_COMMIT_ID=\\"\"\"$$GIT_COMMIT_ID\\"\"\"
 
 #-----------------------------------------------------------------------------------------------#
 # Plugin Project Files                                                                          #
@@ -51,6 +58,9 @@ HEADERS +=                                                                      
     dependencies/libe131/src/e131.h                                                             \
     OpenRGBE131ReceiverDialog.h                                                                 \
     OpenRGBE131ReceiverPlugin.h                                                                 \
+
+FORMS +=                                                                                        \
+    OpenRGBE131ReceiverDialog.ui
 
 #-----------------------------------------------------------------------------------------------#
 # OpenRGB Plugin SDK                                                                            #
@@ -80,6 +90,8 @@ HEADERS +=                                                                      
 #-----------------------------------------------------------------------------------------------#
 # Windows-specific Configuration                                                                #
 #-----------------------------------------------------------------------------------------------#
+win32:CONFIG += c++17
+
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \
         -lws2_32                                                                                \
@@ -101,20 +113,18 @@ win32:DEFINES +=                                                                
     WIN32_LEAN_AND_MEAN
 
 #-----------------------------------------------------------------------------------------------#
-# Default rules for deployment.                                                                 #
+# Linux-specific Configuration                                                                  #
 #-----------------------------------------------------------------------------------------------#
 unix:!macx {
-    target.path = /usr/lib
+    LIBS += -lopenal
+    QMAKE_CXXFLAGS += -std=c++17 -Wno-psabi
+    target.path=$$PREFIX/lib/openrgb/plugins/
+    INSTALLS += target
 }
 
-!isEmpty(target.path): INSTALLS += target
-
-FORMS += \
-    OpenRGBE131ReceiverDialog.ui
-
-#-----------------------------------------------------------------------#
-# MacOS-specific Configuration                                          #
-#-----------------------------------------------------------------------#
+#-----------------------------------------------------------------------------------------------#
+# MacOS-specific Configuration                                                                  #
+#-----------------------------------------------------------------------------------------------#
 QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
 
 macx: {
@@ -122,5 +132,5 @@ macx: {
     LIBS += -framework OpenAL
 }
 
-RESOURCES += \
+RESOURCES +=                                                                                    \
     resources.qrc
