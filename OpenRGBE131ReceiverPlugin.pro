@@ -116,7 +116,6 @@ win32:DEFINES +=                                                                
 # Linux-specific Configuration                                                                  #
 #-----------------------------------------------------------------------------------------------#
 unix:!macx {
-    LIBS += -lopenal
     QMAKE_CXXFLAGS += -std=c++17 -Wno-psabi
     target.path=$$PREFIX/lib/openrgb/plugins/
     INSTALLS += target
@@ -129,7 +128,7 @@ QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
 
 macx: {
     CONFIG += c++17
-    LIBS += -framework OpenAL
+    LIBS += -framework
 }
 
 RESOURCES +=                                                                                    \
