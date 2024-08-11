@@ -28,7 +28,7 @@ Once installed, you will have an E1.31 Receiver tab in OpenRGB.  Select this tab
 * Vixen 3 (http://www.vixenlights.com/)
 * Jinx! (http://www.live-leds.de/downloads/)
 * sACNView (https://sacnview.org/)
-* QLC+ (https://www.qlcplus.org/index.html)
+* QLC+ (https://www.qlcplus.org/)
 
 # Screenshot
 
