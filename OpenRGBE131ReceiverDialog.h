@@ -43,6 +43,7 @@ private:
     Ui::OpenRGBE131ReceiverDialog  *ui;
 
     bool                            online;
+    bool                            initialized;
     unsigned long                   received_count;
 
     std::thread*                    E131ReceiverThread;
@@ -50,6 +51,8 @@ private:
     void                            UpdateOnlineStatus();
     void                            UpdateControllersTreeView();
     void                            UpdateTreeView();
+    void                            LoadMap();
+    void                            StartReceiver();
 };
 
 #endif // OPENRGBE131RECEIVERDIALOG_H
