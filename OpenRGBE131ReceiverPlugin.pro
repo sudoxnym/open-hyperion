@@ -128,7 +128,6 @@ QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
 
 macx: {
     CONFIG += c++17
-    LIBS += -framework
 }
 
 RESOURCES +=                                                                                    \
