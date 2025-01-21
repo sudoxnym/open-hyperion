@@ -26,10 +26,43 @@ CONFIG +=                                                                       
 #-----------------------------------------------------------------------------------------------#
 # Application Configuration                                                                     #
 #-----------------------------------------------------------------------------------------------#
-MAJOR           = 0
-MINOR           = 9
-REVISION        = 1
-PLUGIN_VERSION  = $$MAJOR"."$$MINOR$$REVISION
+MAJOR       = 0
+MINOR       = 9
+SUFFIX      = git
+
+SHORTHASH   = $$system("git rev-parse --short=7 HEAD")
+LASTTAG     = "release_"$$MAJOR"."$$MINOR
+COMMAND     = "git rev-list --count "$$LASTTAG"..HEAD"
+COMMITS     = $$system($$COMMAND)
+
+VERSION_NUM = $$MAJOR"."$$MINOR"."$$COMMITS
+VERSION_STR = $$MAJOR"."$$MINOR
+
+VERSION_DEB = $$VERSION_NUM
+VERSION_WIX = $$VERSION_NUM".0"
+VERSION_AUR = $$VERSION_NUM
+VERSION_RPM = $$VERSION_NUM
+
+equals(SUFFIX, "git") {
+VERSION_STR = $$VERSION_STR"+ ("$$SUFFIX$$COMMITS")"
+VERSION_DEB = $$VERSION_DEB"~git"$$SHORTHASH
+VERSION_AUR = $$VERSION_AUR".g"$$SHORTHASH
+VERSION_RPM = $$VERSION_RPM"^git"$$SHORTHASH
+} else {
+    !isEmpty(SUFFIX) {
+VERSION_STR = $$VERSION_STR"+ ("$$SUFFIX")"
+VERSION_DEB = $$VERSION_DEB"~"$$SUFFIX
+VERSION_AUR = $$VERSION_AUR"."$$SUFFIX
+VERSION_RPM = $$VERSION_RPM"^"$$SUFFIX
+    }
+}
+
+message("VERSION_NUM: "$$VERSION_NUM)
+message("VERSION_STR: "$$VERSION_STR)
+message("VERSION_DEB: "$$VERSION_DEB)
+message("VERSION_WIX: "$$VERSION_WIX)
+message("VERSION_AUR: "$$VERSION_AUR)
+message("VERSION_RPM: "$$VERSION_RPM)
 
 #-----------------------------------------------------------------------------------------------#
 # Automatically generated build information                                                     #
@@ -40,7 +73,7 @@ GIT_COMMIT_ID   = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PR
 # Inject vars in defines                                                                        #
 #-----------------------------------------------------------------------------------------------#
 DEFINES +=                                                                                      \
-    VERSION_STRING=\\"\"\"$$PLUGIN_VERSION\\"\"\"                                               \
+    VERSION_STRING=\\"\"\"$$VERSION_STR\\"\"\"                                                  \
     GIT_COMMIT_ID=\\"\"\"$$GIT_COMMIT_ID\\"\"\"
 
 #-----------------------------------------------------------------------------------------------#
