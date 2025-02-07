@@ -10,6 +10,7 @@
 #pragma once
 
 #include "OpenRGBPluginInterface.h"
+#include "ResourceManagerInterface.h"
 
 #include <QObject>
 #include <QString>
@@ -35,10 +36,10 @@ public:
     /*-------------------------------------------------------------------------------------------------*\
     | Plugin Functionality                                                                              |
     \*-------------------------------------------------------------------------------------------------*/
-    virtual void                Load(bool dark_theme, ResourceManager* resource_manager_ptr)        override;
+    virtual void                Load(ResourceManagerInterface* resource_manager_ptr)        override;
     virtual QWidget*            GetWidget()                                                         override;
     virtual QMenu*              GetTrayMenu()                                                       override;
     virtual void                Unload()                                                            override;
 private:
-    ResourceManager*        resource_manager;
+    ResourceManagerInterface*        resource_manager;
 };

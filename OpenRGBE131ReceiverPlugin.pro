@@ -74,7 +74,37 @@ GIT_COMMIT_ID   = $$system(git --git-dir $$_PRO_FILE_PWD_/.git --work-tree $$_PR
 #-----------------------------------------------------------------------------------------------#
 DEFINES +=                                                                                      \
     VERSION_STRING=\\"\"\"$$VERSION_STR\\"\"\"                                                  \
-    GIT_COMMIT_ID=\\"\"\"$$GIT_COMMIT_ID\\"\"\"
+    BUILDDATE_STRING=\\"\"\"$$BUILDDATE\\"\"\"                                                  \
+    GIT_COMMIT_ID=\\"\"\"$$GIT_COMMIT_ID\\"\"\"                                                 \
+    GIT_COMMIT_DATE=\\"\"\"$$GIT_COMMIT_DATE\\"\"\"                                             \
+    GIT_BRANCH=\\"\"\"$$GIT_BRANCH\\"\"\"                                                       \
+    LATEST_BUILD_URL=\\"\"\"$$LATEST_BUILD_URL\\"\"\"                                           \
+
+
+#-----------------------------------------------------------------------------------------------#
+# OpenRGB Plugin SDK                                                                            #
+#-----------------------------------------------------------------------------------------------#
+INCLUDEPATH +=                                                                                  \
+    OpenRGB                                                                                     \
+    OpenRGB/RGBController                                                                       \
+    OpenRGB/dependencies/json                                                                   \
+    OpenRGB/qt                                                                                  \
+    OpenRGB/i2c_smbus                                                                           \
+    OpenRGB/net_port                                                                            \
+
+HEADERS +=                                                                                      \
+    OpenRGB/Colors.h                                                                            \
+    OpenRGB/OpenRGBPluginInterface.h                                                            \
+    OpenRGB/ResourceManagerInterface.h                                                          \
+
+SOURCES +=                                                                                      \
+    OpenRGB/RGBController/RGBController.cpp                                                     \
+    OpenRGB/RGBController/RGBController_Network.cpp                                             \
+    OpenRGB/NetworkServer.cpp                                                                   \
+    OpenRGB/NetworkClient.cpp                                                                   \
+    OpenRGB/NetworkProtocol.cpp                                                                 \
+    OpenRGB/LogManager.cpp                                                                      \
+    OpenRGB/net_port/net_port.cpp                                                               \
 
 #-----------------------------------------------------------------------------------------------#
 # Plugin Project Files                                                                          #
@@ -95,31 +125,8 @@ HEADERS +=                                                                      
 FORMS +=                                                                                        \
     OpenRGBE131ReceiverDialog.ui
 
-#-----------------------------------------------------------------------------------------------#
-# OpenRGB Plugin SDK                                                                            #
-#-----------------------------------------------------------------------------------------------#
-INCLUDEPATH +=                                                                                  \
-    OpenRGB/                                                                                    \
-    OpenRGB/dependencies/json                                                                   \
-    OpenRGB/i2c_smbus                                                                           \
-    OpenRGB/net_port                                                                            \
-    OpenRGB/RGBController                                                                       \
-    OpenRGB/dependencies/hidapi                                                                 \
-    OpenRGB/hidapi_wrapper                                                                      \
-
-HEADERS +=                                                                                      \
-    OpenRGB/NetworkClient.h                                                                     \
-    OpenRGB/NetworkProtocol.h                                                                   \
-    OpenRGB/NetworkServer.h                                                                     \
-    OpenRGB/OpenRGBPluginInterface.h                                                            \
-    OpenRGB/ProfileManager.h                                                                    \
-    OpenRGB/ResourceManager.h                                                                   \
-    OpenRGB/SettingsManager.h                                                                   \
-    OpenRGB/dependencies/json/json.hpp                                                          \
-    OpenRGB/i2c_smbus/i2c_smbus.h                                                               \
-    OpenRGB/net_port/net_port.h                                                                 \
-    OpenRGB/RGBController/RGBController.h                                                       \
-
+RESOURCES +=                                                                                    \
+    resources.qrc
 #-----------------------------------------------------------------------------------------------#
 # Windows-specific Configuration                                                                #
 #-----------------------------------------------------------------------------------------------#
@@ -163,5 +170,3 @@ macx: {
     CONFIG += c++17
 }
 
-RESOURCES +=                                                                                    \
-    resources.qrc

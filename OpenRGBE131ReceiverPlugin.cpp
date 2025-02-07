@@ -33,7 +33,7 @@ unsigned int OpenRGBPlugin::GetPluginAPIVersion()
     return(OPENRGB_PLUGIN_API_VERSION);
 }
 
-void OpenRGBPlugin::Load(bool dark_theme, ResourceManager* resource_manager_ptr)
+void OpenRGBPlugin::Load(ResourceManagerInterface* resource_manager_ptr)
 {
     /*-----------------------------------------------------*\
     | Save the arguments to Initialize based on what you    |

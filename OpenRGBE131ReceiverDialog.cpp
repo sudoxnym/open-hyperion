@@ -6,8 +6,10 @@
 #include <QMessageBox>
 #include <QSignalMapper>
 #include "filesystem.h"
+#include "RGBController.h"
 #include <e131.h>
 #include <fstream>
+#include "json.hpp"
 
 #ifndef _WIN32
 #include <unistd.h>
@@ -15,6 +17,8 @@
 #endif
 
 #define MAX_LEDS_PER_UNIVERSE  170
+
+using json = nlohmann::json;
 
 void DeviceListChanged_Callback(void * this_ptr)
 {
@@ -72,7 +76,7 @@ public:
     CheckBoxParameter   parameter;
 };
 
-OpenRGBE131ReceiverDialog::OpenRGBE131ReceiverDialog(ResourceManager* manager, QWidget *parent) : QWidget(parent),  ui(new Ui::OpenRGBE131ReceiverDialog)
+OpenRGBE131ReceiverDialog::OpenRGBE131ReceiverDialog(ResourceManagerInterface* manager, QWidget *parent) : QWidget(parent),  ui(new Ui::OpenRGBE131ReceiverDialog)
 {
     ui->setupUi(this);
 

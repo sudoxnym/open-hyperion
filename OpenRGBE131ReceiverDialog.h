@@ -1,7 +1,7 @@
 #ifndef OPENRGBE131RECEIVERDIALOG_H
 #define OPENRGBE131RECEIVERDIALOG_H
 
-#include "ResourceManager.h"
+#include "ResourceManagerInterface.h"
 
 #include <QWidget>
 
@@ -14,7 +14,7 @@ class OpenRGBE131ReceiverDialog : public QWidget
     Q_OBJECT
 
 public:
-    explicit OpenRGBE131ReceiverDialog(ResourceManager* manager, QWidget *parent = nullptr);
+    explicit OpenRGBE131ReceiverDialog(ResourceManagerInterface* manager, QWidget *parent = nullptr);
     ~OpenRGBE131ReceiverDialog();
 
     void AutoMap();
@@ -39,7 +39,7 @@ private slots:
     void CheckBox_updated_slot(QObject* checkbox_argument);
 
 private:
-    ResourceManager*                resource_manager;
+    ResourceManagerInterface       *resource_manager;
     Ui::OpenRGBE131ReceiverDialog  *ui;
 
     bool                            online;
