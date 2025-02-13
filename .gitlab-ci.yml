@@ -12,6 +12,7 @@ variables:
 
 stages:
   - build
+  - deploy
 
 before_script:
  - echo "started by ${GITLAB_USER_NAME}"
@@ -256,15 +257,14 @@ before_script:
   - nmake
   - _fold_final_
 
-  - _fold_start_ 'compressing the release folder so that we can upload it as artifact'
-  - mv release OpenRGBE131ReceiverPlugin_32
-  - ${revision} = ((git rev-parse --short HEAD) | Out-String).Trim()
-  - 7z a -mx9 -r -y "OpenRGBE131ReceiverPlugin_32_${revision}.7z" OpenRGBE131ReceiverPlugin_32
+  - _fold_start_ 'Preparing artifact'  
+  - mv release/OpenRGBE131ReceiverPlugin.dll ../
   - _fold_final_
 
   artifacts:
+    name: "${CI_PROJECT_NAME}_Windows_32_${CI_COMMIT_SHORT_SHA}"
     paths:
-    - _build/*.7z
+    - OpenRGBE131ReceiverPlugin.dll
     expire_in: 30 days
 
 #-----------------------------------------------------------------------#
@@ -317,15 +317,14 @@ before_script:
   - nmake
   - _fold_final_
 
-  - _fold_start_ 'compressing the release folder so that we can upload it as artifact'
-  - mv release OpenRGBE131ReceiverPlugin_64
-  - ${revision} = ((git rev-parse --short HEAD) | Out-String).Trim()
-  - 7z a -mx9 -r -y "OpenRGBE131ReceiverPlugin_64_${revision}.7z" OpenRGBE131ReceiverPlugin_64
+  - _fold_start_ 'Preparing artifact'  
+  - mv release/OpenRGBE131ReceiverPlugin.dll ../
   - _fold_final_
 
   artifacts:
+    name: "${CI_PROJECT_NAME}_Windows_64_${CI_COMMIT_SHORT_SHA}"
     paths:
-    - _build/*.7z
+    - OpenRGBE131ReceiverPlugin.dll
     expire_in: 30 days
 
 #-----------------------------------------------------------------------#
@@ -377,3 +376,26 @@ before_script:
     when: on_success
   - if: '$BUILD_MACOS =~ /.+/'
     when: on_success
+
+#-----------------------------------------------------------------------#
+# Windows (64-bit) MSI Target                                           #
+#-----------------------------------------------------------------------#
+"Windows 64 MSI":
+  image: registry.gitlab.com/openrgbdevelopers/openrgb-linux-ci-deb-builder:bookworm-i386
+  stage: deploy
+  tags:
+  - linux
+  - i386
+  script:
+  -  ls -la
+  -  ./scripts/build-msi.sh
+  dependencies:
+  - "Windows 64"
+  needs:
+  - "Windows 64"
+
+  artifacts:
+    name: "${CI_PROJECT_NAME}_Windows_64_msi_${CI_COMMIT_SHORT_SHA}"
+    paths:
+    - OpenRGB_E131_Receiver_Plugin_Windows_64.msi
+    expire_in: 30 days
