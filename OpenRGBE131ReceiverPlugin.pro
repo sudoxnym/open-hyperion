@@ -132,6 +132,14 @@ RESOURCES +=                                                                    
 #-----------------------------------------------------------------------------------------------#
 win32:CONFIG += c++17
 
+win32:CONFIG(debug, debug|release) {
+    win32:DESTDIR = debug
+}
+
+win32:CONFIG(release, debug|release) {
+    win32:DESTDIR = release
+}
+
 win32:contains(QMAKE_TARGET.arch, x86_64) {
     LIBS +=                                                                                     \
         -lws2_32                                                                                \
