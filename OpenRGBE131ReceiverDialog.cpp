@@ -9,7 +9,7 @@
 #include "RGBController.h"
 #include <e131.h>
 #include <fstream>
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 
 #ifndef _WIN32
 #include <unistd.h>
