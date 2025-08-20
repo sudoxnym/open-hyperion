@@ -146,7 +146,7 @@ void OpenRGBE131ReceiverDialog::UpdateControllersTreeView()
 
         QTreeWidgetItem* new_controller_entry = new QTreeWidgetItem(ui->ControllersTreeView);
 
-        new_controller_entry->setText(0, QString::fromStdString(controller->name));
+        new_controller_entry->setText(0, QString::fromStdString(controller->GetName()));
     }
 }
 
@@ -181,7 +181,7 @@ void OpenRGBE131ReceiverDialog::UpdateTreeView()
         {
             QTreeWidgetItem* new_member_entry = new QTreeWidgetItem(new_universe_entry);
 
-            new_member_entry->setText(0, QString::fromStdString((universe_list[universe_idx].members[member_idx].controller->name)));
+            new_member_entry->setText(0, QString::fromStdString((universe_list[universe_idx].members[member_idx].controller->GetName())));
 
             QLineEdit* start_channel_edit = new QLineEdit(ui->E131TreeView);
             start_channel_edit->setText(QString::number(universe_list[universe_idx].members[member_idx].start_channel));
@@ -646,11 +646,11 @@ void OpenRGBE131ReceiverDialog::LoadMap()
                         \*---------------------------------*/
                         for(unsigned int controller_index = 0; controller_index < resource_manager->GetRGBControllers().size(); controller_index++)
                         {
-                            if((resource_manager->GetRGBControllers()[controller_index]->name          == controller_name)
-                            && (resource_manager->GetRGBControllers()[controller_index]->description   == controller_description)
-                            && (resource_manager->GetRGBControllers()[controller_index]->location      == controller_location)
-                            && (resource_manager->GetRGBControllers()[controller_index]->serial        == controller_serial)
-                            && (resource_manager->GetRGBControllers()[controller_index]->colors.size() == controller_led_count))
+                            if((resource_manager->GetRGBControllers()[controller_index]->GetName()          == controller_name)
+                            && (resource_manager->GetRGBControllers()[controller_index]->GetDescription()   == controller_description)
+                            && (resource_manager->GetRGBControllers()[controller_index]->GetLocation()      == controller_location)
+                            && (resource_manager->GetRGBControllers()[controller_index]->GetSerial()        == controller_serial)
+                            && (resource_manager->GetRGBControllers()[controller_index]->colors.size()      == controller_led_count))
                             {
                                 new_member.controller = resource_manager->GetRGBControllers()[controller_index];
                             }
@@ -1003,10 +1003,10 @@ void OpenRGBE131ReceiverDialog::on_ButtonSaveMap_clicked()
             universe_map["universes"][universe_index]["members"][member_index]["start_led"]                 = member.start_led;
             universe_map["universes"][universe_index]["members"][member_index]["num_leds"]                  = member.num_leds;
             universe_map["universes"][universe_index]["members"][member_index]["update"]                    = member.update;
-            universe_map["universes"][universe_index]["members"][member_index]["controller_name"]           = member.controller->name;
-            universe_map["universes"][universe_index]["members"][member_index]["controller_description"]    = member.controller->description;
-            universe_map["universes"][universe_index]["members"][member_index]["controller_location"]       = member.controller->location;
-            universe_map["universes"][universe_index]["members"][member_index]["controller_serial"]         = member.controller->serial;
+            universe_map["universes"][universe_index]["members"][member_index]["controller_name"]           = member.controller->GetName();
+            universe_map["universes"][universe_index]["members"][member_index]["controller_description"]    = member.controller->GetDescription();
+            universe_map["universes"][universe_index]["members"][member_index]["controller_location"]       = member.controller->GetLocation();
+            universe_map["universes"][universe_index]["members"][member_index]["controller_serial"]         = member.controller->GetSerial();
             universe_map["universes"][universe_index]["members"][member_index]["controller_led_count"]      = member.controller->colors.size();
         }
     }
