@@ -644,15 +644,51 @@ void OpenRGBE131ReceiverDialog::LoadMap()
                         | Search the controller list for a  |
                         | matching controller               |
                         \*---------------------------------*/
-                        for(unsigned int controller_index = 0; controller_index < resource_manager->GetRGBControllers().size(); controller_index++)
+                        const std::vector<RGBController*>& controllers = resource_manager->GetRGBControllers();
+                        RGBController* matched_controller               = NULL;
+                        int            best_score                       = 0;
+
+                        for(unsigned int controller_index = 0; controller_index < controllers.size(); controller_index++)
                         {
-                            if((resource_manager->GetRGBControllers()[controller_index]->GetName()          == controller_name)
-                            && (resource_manager->GetRGBControllers()[controller_index]->GetDescription()   == controller_description)
-                            && (resource_manager->GetRGBControllers()[controller_index]->GetLocation()      == controller_location)
-                            && (resource_manager->GetRGBControllers()[controller_index]->GetSerial()        == controller_serial)
-                            && (resource_manager->GetRGBControllers()[controller_index]->colors.size()      == controller_led_count))
+                            RGBController* controller = controllers[controller_index];
+                            int            score      = 0;
+
+                            if(!controller_serial.empty() && controller->GetSerial() == controller_serial)
                             {
-                                new_member.controller = resource_manager->GetRGBControllers()[controller_index];
+                                score += 100;
+                            }
+
+                            if(!controller_name.empty() && controller->GetName() == controller_name)
+                            {
+                                score += 20;
+                            }
+
+                            if(!controller_description.empty() && controller->GetDescription() == controller_description)
+                            {
+                                score += 10;
+                            }
+
+                            if(!controller_location.empty() && controller->GetLocation() == controller_location)
+                            {
+                                score += 10;
+                            }
+
+                            if(controller_led_count != 0)
+                            {
+                                if(controller->colors.size() == controller_led_count)
+                                {
+                                    score += 5;
+                                }
+                                else if(controller->colors.size() >= controller_led_count)
+                                {
+                                    score += 1;
+                                }
+                            }
+
+                            if(score > best_score)
+                            {
+                                best_score        = score;
+                                matched_controller = controller;
                             }
                         }
 
@@ -660,9 +696,24 @@ void OpenRGBE131ReceiverDialog::LoadMap()
                         | If a controller was found, add    |
                         | the member to the universe        |
                         \*---------------------------------*/
-                        if(new_member.controller != NULL)
+                        if((matched_controller != NULL) && (best_score > 0))
                         {
-                            new_universe.members.push_back(new_member);
+                            new_member.controller = matched_controller;
+
+                            if(new_member.start_led >= new_member.controller->colors.size())
+                            {
+                                continue;
+                            }
+
+                            if((new_member.start_led + new_member.num_leds) > new_member.controller->colors.size())
+                            {
+                                new_member.num_leds = new_member.controller->colors.size() - new_member.start_led;
+                            }
+
+                            if(new_member.num_leds > 0)
+                            {
+                                new_universe.members.push_back(new_member);
+                            }
                         }
                     }
                 }
